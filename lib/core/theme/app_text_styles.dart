@@ -2,19 +2,31 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
-  static const TextStyle heading1 = TextStyle(
+  static const TextStyle heading = TextStyle(
+    fontFamily: 'Poppins',
     fontSize: 24,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.w700,
     color: AppColors.textDark,
   );
 
-  static const TextStyle bodyText = TextStyle(
+  static const TextStyle body = TextStyle(
+    fontFamily: 'Poppins',
     fontSize: 16,
+    fontWeight: FontWeight.w400,
     color: AppColors.textDark,
   );
 
-  static const TextStyle caption = TextStyle(
-    fontSize: 12,
-    color: AppColors.grey,
+  static const TextStyle button = TextStyle(
+    fontFamily: 'Poppins',
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: AppColors.buttonText,
+  );
+
+  static const TextStyle link = TextStyle(
+    fontFamily: 'Poppins',
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textGrey,
   );
 }

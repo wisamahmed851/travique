@@ -1,172 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travique/core/theme/app_colors.dart';
+import 'package:travique/core/theme/app_text_styles.dart';
+import 'package:travique/core/widgets/shadowed_field.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:travique/routes/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
   final AuthController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(
-      context,
-    ).size; // Get screen size for responsiveness
+    final size = MediaQuery.of(context).size;
+    final double scale = (size.height / 800).clamp(0.8, 1.0);
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      backgroundColor: AppColors.background,
       body: Stack(
-        fit: StackFit.expand,
         children: [
-          // Background image
-          Image.asset('assets/images/login_bg.png', fit: BoxFit.cover),
-          // Image.asset('assets/images/login_bg_front.png', fit: BoxFit.cover),
-
-          // White gradient overlay
           Positioned(
             top: 0,
-            bottom: size.height * 0.25,
             left: 0,
             right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color.fromARGB(0, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(0, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(0, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(0, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(0, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(0, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(100, 255, 255, 255).withOpacity(0.0),
-                    const Color.fromARGB(250, 255, 255, 255).withOpacity(0.0),
-                    Colors.white.withOpacity(0.1),
-                    Colors.white.withOpacity(0.3),
-                    Colors.white.withOpacity(0.5),
-                    Colors.white.withOpacity(0.7),
-                    Colors.white.withOpacity(0.8),
-                    Colors.white.withOpacity(0.9),
-                    Colors.white.withOpacity(0.9),
-                    Colors.white,
-                    Colors.white,
-                    Colors.white,
-                  ],
-                ),
-              ),
+            height: size.height * 0.8,
+            child: Image.asset(
+              'assets/images/login_bg.png',
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
             ),
           ),
-          // Foreground content (Login form at bottom)
+          Positioned(
+            top: size.height * 0.1,
+            left: 0,
+            right: 0,
+            height: size.height * 1,
+            child: Image.asset(
+              'assets/images/login_bg_front.png',
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              height: size.height * 0.35,
-              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.95),
-                // borderRadius: const BorderRadius.only(
-                //   topLeft: Radius.circular(16),
-                //   topRight: Radius.circular(16),
-                // ),
-                // boxShadow: [
-                //   BoxShadow(
-                //     color: Colors.black12,
-                //     blurRadius: 8,
-                //     offset: const Offset(0, -2),
-                //   ),
-                // ],
-              ),
-              child: SafeArea(
-                child: Center(
-                  child: Column(
-                    mainAxisSize:
-                        MainAxisSize.min, // Space between top and bottom
-                    children: [
-                      // Top back button + title
-                  
-                      // // Bottom login form
-                      // Container(
-                      //   width: double.infinity,
-                      //   padding: const EdgeInsets.all(16),
-                      //   // margin: EdgeInsets.only(bottom: size.height * 0.05), // 5% bottom space
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.white.withOpacity(0.85),
-                      //     borderRadius: BorderRadius.circular(12),
-                      //     boxShadow: [
-                      //       BoxShadow(
-                      //         color: Colors.black12,
-                      //         blurRadius: 8,
-                      //         offset: const Offset(0, 2),
-                      //       ),
-                      //     ],
-                      //   ),
-                      //   child: Column(
-                      //     mainAxisSize: MainAxisSize.min, // Wrap only its content
-                      //     children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+            child: SingleChildScrollView(
+              reverse: true,
+              child: Container(
+                height: size.height * 0.38,
+                padding: EdgeInsets.all(8 * scale),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ✅ Reusable Email Field
+                    buildShadowedField(
+                      hint: 'Email',
+                      controller: controller.emailController,
+                      scale: scale,
+                    ),
+                    SizedBox(height: 12 * scale),
+
+                    // ✅ Reusable Password Field
+                    buildShadowedField(
+                      hint: 'Password',
+                      controller: controller.passwordController,
+                      scale: scale,
+                      obscure: true,
+                    ),
+                    SizedBox(height: 18 * scale),
+
+                    // ✅ Submit Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.buttonBackground,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 3,
+                          padding: EdgeInsets.symmetric(vertical: 16 * scale),
+                        ),
+                        onPressed: controller.login,
+                        child: Text(
+                          'Submit',
+                          style: AppTextStyles.button.copyWith(
+                            fontSize: 20 * scale,
                           ),
                         ),
-                        controller: controller.emailController,
                       ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        controller: controller.passwordController,
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightBlue[300],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 2,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          onPressed: controller.login,
-                          child: const Text('Submit'),
+                    ),
+                    SizedBox(height: 18 * scale),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Forgot Password ?',
+                        style: AppTextStyles.link.copyWith(
+                          fontSize: 18 * scale,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Forgot Password ?'),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: EdgeInsets.all(5 * scale),
+              child: Row(
                 children: [
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                  GestureDetector(
+                    onTap: () => Get.offAllNamed(Routes.SIGNUP),
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppColors.textGrey,
+                      size: 20 * scale,
+                    ),
                   ),
-                  const Text(
+                  SizedBox(width: 4 * scale),
+                  Text(
                     'Sign up',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 16 * scale,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textGrey,
+                    ),
                   ),
                 ],
               ),

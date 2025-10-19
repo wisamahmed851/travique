@@ -4,6 +4,6 @@ import 'package:travique/features/auth/presentation/controllers/auth_controller.
 class AuthBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<AuthController>(() => AuthController());
+    Get.put(AuthController(), permanent: true);
   }
 }
