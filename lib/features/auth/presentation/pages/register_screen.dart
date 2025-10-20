@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/widgets/shadowed_field.dart';
+import 'package:travique/core/theme/app_colors.dart';
+import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:travique/routes/app_routes.dart';
 
@@ -15,7 +17,7 @@ class RegisterScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.scaffold,
       body: Stack(
         children: [
           // ✅ Background
@@ -43,7 +45,8 @@ class RegisterScreen extends StatelessWidget {
               alignment: Alignment.topCenter,
             ),
           ),
-         
+
+          // ✅ Form Section
           Positioned(
             left: 0,
             right: 0,
@@ -51,51 +54,44 @@ class RegisterScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: EdgeInsets.only(bottom: keyboardOpen ? 20 : 0),
               child: Container(
-                width: double.infinity,
                 margin: EdgeInsets.symmetric(horizontal: 8 * scale),
                 padding: EdgeInsets.all(8 * scale),
-                decoration: BoxDecoration(
-                  color: Colors.transparent, // keep it clean
-                ),
+                color: Colors.transparent,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // ✅ Name Field
+                    // Name Field
                     buildShadowedField(
                       hint: 'Name',
                       controller: controller.emailController,
                       scale: scale,
                     ),
-
                     SizedBox(height: 12 * scale),
 
-                    // ✅ Email Field
+                    // Email Field
                     buildShadowedField(
                       hint: 'Email',
                       controller: controller.emailController,
                       scale: scale,
                     ),
-
                     SizedBox(height: 12 * scale),
 
-                    // ✅ Password Field
+                    // Password Field
                     buildShadowedField(
                       hint: 'Password',
                       controller: controller.passwordController,
                       obscure: true,
                       scale: scale,
                     ),
-
                     SizedBox(height: 12 * scale),
 
-                    // ✅ Re-enter Password Field
+                    // Re-enter Password Field
                     buildShadowedField(
                       hint: 'Re-enter Password',
                       controller: controller.emailController,
                       obscure: true,
                       scale: scale,
                     ),
-
                     SizedBox(height: 18 * scale),
 
                     // ✅ Submit Button
@@ -103,36 +99,31 @@ class RegisterScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF9ECBE5),
+                          backgroundColor: AppColors.buttonBackground,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           elevation: 3,
                           padding: EdgeInsets.symmetric(vertical: 16 * scale),
                         ),
-                        onPressed: () => {},
+                        onPressed: () {},
                         child: Text(
                           'Submit',
-                          style: TextStyle(
+                          style: AppTextStyles.button.copyWith(
                             fontSize: 20 * scale,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-
                     SizedBox(height: 18 * scale),
 
-                    // ✅ Already have account
+                    // ✅ Already have an account
                     TextButton(
                       onPressed: () => Get.offAllNamed(Routes.LOGIN),
                       child: Text(
                         'Already have an account?',
-                        style: TextStyle(
+                        style: AppTextStyles.link.copyWith(
                           fontSize: 18 * scale,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
                         ),
                       ),
                     ),
@@ -142,6 +133,7 @@ class RegisterScreen extends StatelessWidget {
             ),
           ),
 
+          // ✅ App Bar (Back + Title)
           Positioned(
             top: 0,
             left: 0,
@@ -156,19 +148,17 @@ class RegisterScreen extends StatelessWidget {
                       onTap: () => Get.offAllNamed(Routes.LOGIN),
                       child: const Icon(
                         Icons.arrow_back_ios_new,
-                        color: Colors.black54,
+                        color: AppColors.textGrey,
                         size: 20,
                       ),
                     ),
-                    const SizedBox(
-                      width: 4,
-                    ), // Small space between icon and text
-                    const Text(
+                    const SizedBox(width: 4),
+                    Text(
                       'Sign up',
-                      style: TextStyle(
+                      style: AppTextStyles.body.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF676666),
+                        color: AppColors.textGrey,
                       ),
                     ),
                   ],
@@ -176,8 +166,6 @@ class RegisterScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // ✅ Fixed bottom form container (always 10% from bottom)
         ],
       ),
     );
