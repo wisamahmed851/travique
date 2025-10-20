@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:travique/features/auth/bindings/auth_binding.dart';
+import 'package:travique/features/auth/presentation/pages/forget_password.dart';
 import 'package:travique/features/auth/presentation/pages/intro_screen.dart';
 import 'package:travique/features/splash/presentation/pages/splash_screen.dart';
 import 'package:travique/features/auth/presentation/pages/login_screen.dart';
@@ -27,6 +28,11 @@ class AppPages {
     GetPage(
       name: Routes.SIGNUP,
       page: () => RegisterScreen(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.FORGOT_PASSWORD,
+      page: () => ForgetPassword(),
       binding: AuthBinding(),
     ),
     GetPage(

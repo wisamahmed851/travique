@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/core/widgets/shadowed_field.dart';
+import 'package:travique/core/widgets/submit_button.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:travique/routes/app_routes.dart';
 
-class LoginScreen extends StatelessWidget {
+class ForgetPassword extends StatelessWidget {
   final AuthController controller = Get.find();
 
   @override
@@ -45,11 +46,22 @@ class LoginScreen extends StatelessWidget {
             child: SingleChildScrollView(
               reverse: true,
               child: Container(
-                height: size.height * 0.38,
+                height: size.height * 0.35,
                 padding: EdgeInsets.all(8 * scale),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                      'Enter Your Email to Reset Password',
+                      style: AppTextStyles.body.copyWith(
+                        fontSize: 16 * scale,
+                        color: AppColors.textGrey,
+                      ),
+                    ),
+                    ),
+                    SizedBox(height: 12 * scale),
                     // ✅ Reusable Email Field
                     buildShadowedField(
                       hint: 'Email',
@@ -58,49 +70,8 @@ class LoginScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12 * scale),
 
-                    // ✅ Reusable Password Field
-                    buildShadowedField(
-                      hint: 'Password',
-                      controller: controller.passwordController,
-                      scale: scale,
-                      obscure: true,
-                    ),
-                    SizedBox(height: 18 * scale),
-
                     // ✅ Submit Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.buttonBackground,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 3,
-                          padding: EdgeInsets.symmetric(vertical: 16 * scale),
-                        ),
-                        onPressed: controller.login,
-                        child: Text(
-                          'Submit',
-                          style: AppTextStyles.button.copyWith(
-                            fontSize: 20 * scale,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 18 * scale),
-                    TextButton(
-                      onPressed: () {
-                        Get.toNamed(Routes.FORGOT_PASSWORD);
-                      },
-                      child: Text(
-                        'Forgot Password ?',
-                        style: AppTextStyles.link.copyWith(
-                          fontSize: 18 * scale,
-                        ),
-                      ),
-                    ),
-                  ],
+                    PrimaryButton(text: 'Submit', onPressed: controller.login, scale: scale)],
                 ),
               ),
             ),
