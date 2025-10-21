@@ -27,7 +27,7 @@ class AuthController extends GetxController {
         Get.snackbar("Error", "Invalid Credentials");
       }
     } catch (e) {
-      print(e);
+      print("Error during login: ${e.toString()}");
       Get.snackbar("Login Failed", e.toString());
     } finally {
       isLoading.value = false;
