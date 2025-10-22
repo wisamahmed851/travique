@@ -13,25 +13,28 @@ class AuthController extends GetxController {
 
   Future<void> login() async {
     isLoading.value = true;
-
-    try {
-      final response = await loginUsecase(
-        emailController.text,
-        passwordController.text,
-      );
-      print(response);
-      if (response['data']['access_token'] != null) {
-        Get.snackbar("Success", "Login Successful");
-        Get.offAllNamed(Routes.HOME);
-      } else {
-        Get.snackbar("Error", "Invalid Credentials");
-      }
-    } catch (e) {
-      print("Error during login: ${e.toString()}");
-      Get.snackbar("Login Failed", e.toString());
-    } finally {
-      isLoading.value = false;
-    }
+    await Future.delayed(Duration(seconds: 2));
+    isLoading.value = false;
+    Get.snackbar("Success", "Login Successful");
+    Get.offAllNamed(Routes.HOME);
+    // try {
+    //   final response = await loginUsecase(
+    //     emailController.text,
+    //     passwordController.text,
+    //   );
+    //   print(response);
+    //   if (response['data']['access_token'] != null) {
+    //     Get.snackbar("Success", "Login Successful");
+    //     Get.offAllNamed(Routes.HOME);
+    //   } else {
+    //     Get.snackbar("Error", "Invalid Credentials");
+    //   }
+    // } catch (e) {
+    //   print("Error during login: ${e.toString()}");
+    //   Get.snackbar("Login Failed", e.toString());
+    // } finally {
+    //   isLoading.value = false;
+    // }
   }
 
   @override
