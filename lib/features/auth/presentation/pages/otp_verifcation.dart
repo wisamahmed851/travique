@@ -40,13 +40,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     super.dispose();
   }
 
-  void _onOtpChanged(String value, int index) {
-    if (value.isNotEmpty && index < otpLength - 1) {
-      FocusScope.of(context).requestFocus(focusNodes[index + 1]);
-    } else if (value.isEmpty && index > 0) {
-      FocusScope.of(context).requestFocus(focusNodes[index - 1]);
-    }
-  }
+  // void _onOtpChanged(String value, int index) {
+  //   if (value.isNotEmpty && index < otpLength - 1) {
+  //     FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+  //   } else if (value.isEmpty && index > 0) {
+  //     FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+  //   }
+  // }
 
   void _submitOtp() {
     String otp = otpControllers.map((e) => e.text).join();

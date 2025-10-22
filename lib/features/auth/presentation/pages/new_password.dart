@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:travique/routes/app_routes.dart';
 
 class NewPassword extends StatelessWidget {
   final AuthController controller = Get.find();
