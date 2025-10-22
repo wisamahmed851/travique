@@ -11,11 +11,14 @@ class AppColors {
 
   // Text Colors
   static const Color textDark = Color(0xFF212121);
+  static const Color black = Color(0xFF000000);
   static const Color textLight = Colors.white;
-  static const Color textLightGrey = Color.fromRGBO(189, 189, 189, 1);
+  static const Color textLightGrey = Color(0xFFBDBDBD);
   static const Color textGrey = Color(0xFF686868);
   static const Color textDarkGrey = Color(0xFF5a5a5a);
   static const Color borderLightGrey = Color(0xFFB8B6B6);
+
+  static const Color inputBackground = Color(0xFFedf0f7);
 
   // Buttons
   static const Color buttonBackground = Color(0xFF9ECBE5);

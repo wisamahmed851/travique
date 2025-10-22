@@ -7,40 +7,55 @@ class HomeScreen extends StatelessWidget {
 
   final List<Map<String, dynamic>> categories = [
     {"name": "All", "isSelected": true},
-    {"name": "Jungle", "isSelected": false},
-    {"name": "Mountain", "isSelected": false},
-    {"name": "Historical", "isSelected": false},
+    {"name": "Asia", "isSelected": false},
+    {"name": "Europe", "isSelected": false},
+    {"name": "America", "isSelected": false},
+    {"name": "Oceania", "isSelected": false},
   ];
 
   final List<Map<String, dynamic>> destinations = [
     {
-      "country": "France",
-      "city": "Paris",
+      "country": "Maldives",
+      "city": "South Asia",
       "rating": 4.6,
-      "image":
-          "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
-    },
-    {
-      "country": "France",
-      "city": "Paris",
-      "rating": 4.6,
-      "image":
-          "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
-    },
-    {
-      "country": "France",
-      "city": "Paris",
-      "rating": 4.6,
-      "image":
-          "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
-    },
-    {
-      "country": "Italy",
-      "city": "Venice",
-      "rating": 4.8,
       "image":
           "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
     },
+    {
+      "country": "Kashmir",
+      "city": "India",
+      "rating": 4.8,
+      "image":
+          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800",
+    },
+    {
+      "country": "Bali",
+      "city": "Indonesia",
+      "rating": 4.7,
+      "image":
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800",
+    },
+    {
+      "country": "Switzerland",
+      "city": "Europe",
+      "rating": 4.9,
+      "image":
+          "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800",
+    },
+  ];
+  final List<Map<String, dynamic>> explore = [
+    {
+      "category": "Mountains",
+      "image": "assets/images/mountain.png",
+    },
+    {
+      "category": "History",
+      "image": "assets/images/History.png",
+    },
+    {
+      "category": "Beach",
+      "image": "assets/images/Beach.png",
+    }
   ];
 
   final List<Map<String, dynamic>> popular = [
@@ -75,11 +90,11 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
               _buildSearchBar(),
               const SizedBox(height: 25),
-              _buildCategorySection(context),
+              _buildExclusivePackageSection(context),
               const SizedBox(height: 25),
-              _buildSectionTitle("Popular"),
+              _buildSectionTitle("Explore Category"),
               const SizedBox(height: 10),
-              _buildPopularSection(),
+              _buildExploreSection(),
             ],
           ),
         ),
@@ -90,20 +105,30 @@ class HomeScreen extends StatelessWidget {
   Widget _buildHeader() {
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 25,
-          backgroundImage: NetworkImage(
-            'https://randomuser.me/api/portraits/women/44.jpg',
-          ),
-        ),
         const SizedBox(width: 10),
-        const Column(
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Welcome", style: TextStyle(color: Colors.grey, fontSize: 14)),
+            Text(
+              "Good Evening",
+              style: AppTextStyles.body.copyWith(
+                fontSize: 16,
+                color: AppColors.textGrey,
+              ),
+            ),
             Text(
               "Fatemeh Hamedi",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: AppTextStyles.heading.copyWith(
+                fontSize: 20,
+                color: AppColors.black,
+              ),
+            ),
+            Text(
+              "Explore the world",
+              style: AppTextStyles.heading.copyWith(
+                fontSize: 24,
+                color: AppColors.black,
+              ),
             ),
           ],
         ),
@@ -114,29 +139,42 @@ class HomeScreen extends StatelessWidget {
   Widget _buildSearchBar() {
     return TextField(
       decoration: InputDecoration(
-        hintText: "Search destination",
-        hintStyle: TextStyle(color: AppColors.borderLightGrey, fontSize: 16),
-        prefixIcon: const Icon(Icons.search, color: AppColors.borderLightGrey),
+        hintText: "Where you Want to go",
+        hintStyle: AppTextStyles.body.copyWith(
+          color: AppColors.textGrey,
+          fontSize: 16,
+        ),
+        prefixIcon: const Icon(
+          Icons.search_outlined,
+          color: AppColors.textGrey,
+          size: 24,
+          weight: 700,
+        ),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: AppColors.inputBackground,
         contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(
-            color: AppColors.borderLightGrey,
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide.none,
         ),
       ),
     );
   }
 
-  Widget _buildCategorySection(BuildContext context) {
+  Widget _buildExclusivePackageSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Categories", style: AppTextStyles.heading.copyWith(fontSize: 18)),
+        Text(
+          "Exclusive Package",
+          style: AppTextStyles.heading.copyWith(
+            fontSize: 18,
+            color: AppColors.black,
+          ),
+        ),
         const SizedBox(height: 10),
+
+        // 🌍 Category Chips
         SizedBox(
           height: 40,
           child: ListView.builder(
@@ -145,7 +183,11 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               bool isSelected = categories[index]["isSelected"];
               return Container(
-                margin: const EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 12),
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(20)
+                // ),
+                color: null,
                 child: FilterChip(
                   label: Text(
                     categories[index]["name"],
@@ -156,99 +198,149 @@ class HomeScreen extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  showCheckmark: false, // 🔹 removes the tick icon
+                  showCheckmark: false,
+                  side: BorderSide.none,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
-                    side: BorderSide.none, // 🔹 removes border outline
                   ),
                   selected: isSelected,
-                  selectedColor: Colors.lightBlueAccent,
-                  backgroundColor: Colors.grey.shade200,
-                  onSelected: (bool selected) {},
+                  selectedColor: AppColors.primary,
+                  backgroundColor: Colors.transparent,
+                  onSelected: (_) {},
                 ),
               );
             },
           ),
         ),
+
         const SizedBox(height: 20),
-        _buildDestinationCards(context),
+
+        // 🧳 Package Cards
+        _buildExclusivePackageCards(context),
       ],
     );
   }
 
-  Widget _buildDestinationCards(BuildContext context) {
+  Widget _buildExclusivePackageCards(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
     return SizedBox(
-      height: 220,
+      height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: destinations.length,
         itemBuilder: (context, index) {
           final item = destinations[index];
+
           return Container(
             width: screenWidth * 0.75,
-            margin: const EdgeInsets.only(right: 15),
+            margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(item["image"]),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withOpacity(0.5),
-                        Colors.transparent,
-                      ],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                // 🌥️ Bottom-only shadow
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 20,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 10), // pushes shadow downward
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item["country"],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 🖼️ Image + Bookmark overlay
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                      child: Image.network(
+                        item["image"],
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+
+                    // 🔖 Bookmark icon
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(6),
+                        child: const Icon(
+                          Icons.bookmark_border_rounded,
+                          color: Colors.black87,
+                          size: 22,
                         ),
                       ),
+                    ),
+                  ],
+                ),
+
+                // 🏷️ Details section
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${item["country"]} Package",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            item["city"],
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 18.5,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
+                      // ⭐ Rating
                       Row(
                         children: [
                           const Icon(
-                            Icons.location_on,
-                            size: 14,
-                            color: Colors.white70,
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 22,
                           ),
-                          Text(
-                            item["city"],
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const Spacer(),
-                          const Icon(
-                            Icons.star,
-                            size: 14,
-                            color: Colors.amberAccent,
-                          ),
+                          const SizedBox(width: 4),
                           Text(
                             item["rating"].toString(),
                             style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                              fontSize: 20,
                             ),
                           ),
                         ],
@@ -271,93 +363,38 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPopularSection() {
+  Widget _buildExploreSection() {
     return SizedBox(
-      height: 150,
+      height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: popular.length,
+        itemCount: explore.length,
         itemBuilder: (context, index) {
-          final item = popular[index];
+          final item = explore[index];
           return Container(
             width: 160,
+            
             margin: const EdgeInsets.only(right: 15),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                image: NetworkImage(item["image"]),
-                fit: BoxFit.cover,
+              border: Border.all(
+                color: AppColors.borderLightGrey,
+                width: 2,
               ),
             ),
-            child: Stack(
-              alignment: Alignment.bottomLeft,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.black.withOpacity(0.5),
-                        Colors.transparent,
-                      ],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
+                Image.asset(item['image'], height: 80, width: 80),
+                const SizedBox(height: 8),
+                Text(
+                  item['category'],
+                  style: AppTextStyles.heading.copyWith(
+                    fontSize: 20,
+                    color: AppColors.black
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item["country"],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 12,
-                                color: Colors.white70,
-                              ),
-                              Text(
-                                item["city"],
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            size: 12,
-                            color: Colors.amberAccent,
-                          ),
-                          Text(
-                            item["rating"].toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+
                 ),
               ],
             ),
