@@ -5,7 +5,7 @@ import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:travique/routes/app_routes.dart';
 
-class ForgetPassword extends StatelessWidget {
+class NewPassword extends StatelessWidget {
   final AuthController controller = Get.find();
 
   @override
@@ -18,13 +18,11 @@ class ForgetPassword extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 28 * scale,
-              vertical: 20 * scale,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 28 * scale, vertical: 20 * scale),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 // Back button
                 GestureDetector(
                   onTap: () => Get.back(),
@@ -42,7 +40,7 @@ class ForgetPassword extends StatelessWidget {
                 // 🏷️ Title
                 Center(
                   child: Text(
-                    'Reset Passwrod',
+                    'Create New Password',
                     textAlign: TextAlign.center,
                     style: AppTextStyles.heading.copyWith(
                       fontWeight: FontWeight.bold,
@@ -56,7 +54,7 @@ class ForgetPassword extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30 * scale),
                     child: Text(
-                      'Enter the email address associated with your account',
+                      'Your new password must be different from previous used passwords',
                       textAlign: TextAlign.center,
                       style: AppTextStyles.body.copyWith(
                         fontSize: 18 * scale,
@@ -102,10 +100,7 @@ class ForgetPassword extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    onPressed: () => Get.toNamed(
-                      Routes.OTP_VERIFICATION,
-                      arguments: {'isPasswordReset': false},
-                    ),
+                    onPressed: controller.login,
                     child: Text(
                       'Sent Code',
                       style: AppTextStyles.button.copyWith(

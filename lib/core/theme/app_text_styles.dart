@@ -6,7 +6,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontSize: 24,
     fontWeight: FontWeight.w700,
-    color: AppColors.textDark,
+    color: AppColors.textGrey,
   );
 
   static const TextStyle body = TextStyle(

@@ -10,6 +10,11 @@ class AuthController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   var isLoading = false.obs;
+  var isPasswordHidden = true.obs;
+
+  Future<void> togglePasswordVisibility() async{
+    isPasswordHidden.value = !isPasswordHidden.value;
+  }
 
   Future<void> login() async {
     isLoading.value = true;
@@ -37,10 +42,10 @@ class AuthController extends GetxController {
     // }
   }
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   emailController.dispose();
+  //   passwordController.dispose();
+  //   super.onClose();
+  // }
 }
