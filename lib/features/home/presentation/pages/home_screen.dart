@@ -223,9 +223,10 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildExclusivePackageCards(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return SizedBox(
-      height: 300,
+      height: screenHeight * 0.5,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: destinations.length,
@@ -234,6 +235,7 @@ class HomeScreen extends StatelessWidget {
 
           return Container(
             width: screenWidth * 0.75,
+            height: screenHeight * 0.4,
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -255,10 +257,7 @@ class HomeScreen extends StatelessWidget {
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                       child: Image.network(
                         item["image"],
                         height: 200,
