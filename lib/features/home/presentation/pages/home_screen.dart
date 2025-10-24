@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
+import 'package:travique/core/widgets/bottom_nevigation.dart';
+import 'package:travique/core/widgets/exclusive_package_card.dart';
+import 'package:travique/core/widgets/know_your_world_section.dart';
+import 'package:travique/core/widgets/recommended_packages_section.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -44,18 +48,9 @@ class HomeScreen extends StatelessWidget {
     },
   ];
   final List<Map<String, dynamic>> explore = [
-    {
-      "category": "Mountains",
-      "image": "assets/images/mountain.png",
-    },
-    {
-      "category": "History",
-      "image": "assets/images/History.png",
-    },
-    {
-      "category": "Beach",
-      "image": "assets/images/Beach.png",
-    }
+    {"category": "Mountains", "image": "assets/images/mountain.png"},
+    {"category": "History", "image": "assets/images/History.png"},
+    {"category": "Beach", "image": "assets/images/Beach.png"},
   ];
 
   final List<Map<String, dynamic>> popular = [
@@ -79,11 +74,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: _buildBottomNav(),
+      bottomNavigationBar: BottomNavigation(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ListView(
+            scrollDirection: Axis.vertical,
+            physics: const BouncingScrollPhysics(),
             children: [
               const SizedBox(height: 10),
               _buildHeader(),
@@ -94,7 +91,11 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 25),
               _buildSectionTitle("Explore Category"),
               const SizedBox(height: 10),
-              _buildExploreSection(),
+              _buildExploreSection(context),
+              const SizedBox(height: 25),
+              RecommendedPackagesSection(),
+              const SizedBox(height: 25),
+              KnowYourWorldSection(),
             ],
           ),
         ),
@@ -184,9 +185,6 @@ class HomeScreen extends StatelessWidget {
               bool isSelected = categories[index]["isSelected"];
               return Container(
                 margin: const EdgeInsets.only(right: 12),
-                // decoration: BoxDecoration(
-                //   borderRadius: BorderRadius.circular(20)
-                // ),
                 color: null,
                 child: FilterChip(
                   label: Text(
@@ -205,7 +203,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   selected: isSelected,
                   selectedColor: AppColors.primary,
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Colors.white,
                   onSelected: (_) {},
                 ),
               );
@@ -216,142 +214,25 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 20),
 
         // 🧳 Package Cards
-        _buildExclusivePackageCards(context),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.35,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: destinations.length,
+            clipBehavior: Clip.none,
+            itemBuilder: (context, index) {
+              final item = destinations[index];
+              return ExclusivePackageCard(
+                city: item['city'],
+                image: item['image'],
+                country: item['country'],
+                rating: item['rating'],
+              );
+            },
+          ),
+        ),
+      
       ],
-    );
-  }
-
-  Widget _buildExclusivePackageCards(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      height: screenHeight * 0.5,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: destinations.length,
-        itemBuilder: (context, index) {
-          final item = destinations[index];
-
-          return Container(
-            width: screenWidth * 0.75,
-            height: screenHeight * 0.4,
-            margin: const EdgeInsets.only(right: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                // 🌥️ Bottom-only shadow
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.12),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 10), // pushes shadow downward
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 🖼️ Image + Bookmark overlay
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      child: Image.network(
-                        item["image"],
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-
-                    // 🔖 Bookmark icon
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(6),
-                        child: const Icon(
-                          Icons.bookmark_border_rounded,
-                          color: Colors.black87,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // 🏷️ Details section
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${item["country"]} Package",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            item["city"],
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 18.5,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                      // ⭐ Rating
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star_rounded,
-                            color: Colors.amber,
-                            size: 22,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            item["rating"].toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
     );
   }
 
@@ -362,69 +243,46 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExploreSection() {
+  Widget _buildExploreSection(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: 100,
+      height: screenHeight * 0.17,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: explore.length,
         itemBuilder: (context, index) {
           final item = explore[index];
           return Container(
-            width: 160,
-            
+            width: screenWidth * 0.32,
+
             margin: const EdgeInsets.only(right: 15),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: AppColors.borderLightGrey,
-                width: 2,
-              ),
+              border: Border.all(color: AppColors.borderLightGrey, width: 2),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
 
-              children: [
-                Image.asset(item['image'], height: 80, width: 80),
-                const SizedBox(height: 8),
-                Text(
-                  item['category'],
-                  style: AppTextStyles.heading.copyWith(
-                    fontSize: 20,
-                    color: AppColors.black
+                children: [
+                  Image.asset(item['image'], height: 80, width: 80),
+                  const SizedBox(height: 8),
+                  Text(
+                    item['category'],
+                    style: AppTextStyles.body.copyWith(
+                      fontSize: 17,
+                      color: AppColors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildBottomNav() {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.lightBlueAccent,
-      unselectedItemColor: Colors.grey,
-      type: BottomNavigationBarType.fixed,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_border),
-          label: "Fav",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications_none),
-          label: "Notif",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          label: "Profile",
-        ),
-      ],
     );
   }
 }
