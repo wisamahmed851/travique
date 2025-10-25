@@ -6,6 +6,8 @@ import 'package:travique/features/auth/presentation/pages/new_password.dart';
 import 'package:travique/features/auth/presentation/pages/otp_verifcation.dart';
 import 'package:travique/features/city/bindings/city_binding.dart';
 import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
+import 'package:travique/features/favorite_places/bindings/favorite_places_binding.dart';
+import 'package:travique/features/favorite_places/presentation/pages/favorite_places_screen.dart';
 import 'package:travique/features/place/bindings/place_binding.dart';
 import 'package:travique/features/place/presentation/pages/place_detail_screen.dart';
 import 'package:travique/features/splash/presentation/pages/splash_screen.dart';
@@ -59,13 +61,21 @@ class AppPages {
     ),
     GetPage(
       name: Routes.HOME,
-      page: () => HomeScreen(),
+      page: () => CityHomeScreen(
+        cityName: "New York",
+        cityImage: "assets/images/newyork.jpeg",
+      ),
       binding: HomeBinding(),
     ),
     GetPage(
       name: Routes.PLACE_DETAILS,
       page: () => PlaceDetailScreen(),
       binding: PlaceBinding(),
+    ),
+    GetPage(
+      name: Routes.FAVORITE_PLACES,
+      page: () => FavoritePlacesScreen(),
+      binding: FavoritePlacesBinding(),
     ),
   ];
 }

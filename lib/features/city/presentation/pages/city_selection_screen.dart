@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
+import 'package:travique/core/widgets/search_bar.dart';
 import 'package:travique/features/city/presentation/widgets/city_card.dart';
 import 'package:travique/routes/app_routes.dart';
 
@@ -16,10 +17,18 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, String>> cities = [
-    {'name': 'New York', 'country': 'USA', 'image': 'assets/images/newyork.jpeg'},
+    {
+      'name': 'New York',
+      'country': 'USA',
+      'image': 'assets/images/newyork.jpeg',
+    },
     {'name': 'Paris', 'country': 'France', 'image': 'assets/images/paris.jpeg'},
     {'name': 'Tokyo', 'country': 'Japan', 'image': 'assets/images/tokyo.jpeg'},
-    {'name': 'Sydney', 'country': 'Australia', 'image': 'assets/images/sydney.jpeg'},
+    {
+      'name': 'Sydney',
+      'country': 'Australia',
+      'image': 'assets/images/sydney.jpeg',
+    },
   ];
 
   String searchQuery = '';
@@ -31,7 +40,10 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
     final double scale = (size.height / 800).clamp(0.85, 1.1);
 
     final filteredCities = cities
-        .where((city) => city['name']!.toLowerCase().contains(searchQuery.toLowerCase()))
+        .where(
+          (city) =>
+              city['name']!.toLowerCase().contains(searchQuery.toLowerCase()),
+        )
         .toList();
 
     return Scaffold(
@@ -49,35 +61,15 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16 * scale, vertical: 10 * scale),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16 * scale,
+          vertical: 10 * scale,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 🔍 Search Bar
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.inputBackground,
-                borderRadius: BorderRadius.circular(12 * scale),
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (value) => setState(() => searchQuery = value),
-                style: AppTextStyles.body.copyWith(
-                  color: AppColors.textGrey,
-                  fontSize: 14 * scale,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Search City...',
-                  contentPadding: EdgeInsets.symmetric(vertical: 14 * scale),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.textGrey),
-                  border: InputBorder.none,
-                  hintStyle: AppTextStyles.inputfields.copyWith(
-                    color: AppColors.textGrey,
-                    fontSize: 14 * scale,
-                  ),
-                ),
-              ),
-            ),
+            SearchBarWidget(searchtext: "Search Cities"),
 
             SizedBox(height: 20 * scale),
 

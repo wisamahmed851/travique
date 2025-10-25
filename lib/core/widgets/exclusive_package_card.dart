@@ -41,7 +41,7 @@ class ExclusivePackageCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Image.network(
+                child: Image.asset(
                   image,
                   height: 200,
                   width: double.infinity,
@@ -87,7 +87,7 @@ class ExclusivePackageCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${country} Package",
+                      "${country}",
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 20,

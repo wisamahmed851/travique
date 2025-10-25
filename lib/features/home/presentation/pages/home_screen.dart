@@ -4,288 +4,212 @@ import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/core/widgets/bottom_nevigation.dart';
 import 'package:travique/core/widgets/exclusive_package_card.dart';
-import 'package:travique/core/widgets/know_your_world_section.dart';
 import 'package:travique/core/widgets/recommended_packages_section.dart';
+import 'package:travique/core/widgets/search_bar.dart';
 import 'package:travique/routes/app_routes.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class CityHomeScreen extends StatelessWidget {
+  final String cityName;
+  final String cityImage;
+
+  CityHomeScreen({Key? key, required this.cityName, required this.cityImage})
+    : super(key: key);
+
+  // ✅ Example sample data — replace later with API data
+  final List<Map<String, dynamic>> attractions = [
+    {
+      "title": "Central Park",
+      "subtitle": "Famous urban park",
+      "rating": 4.8,
+      "image": "assets/images/centralPark.jpg",
+    },
+    {
+      "title": "Times Square",
+      "subtitle": "Entertainment hub",
+      "rating": 4.7,
+      "image": "assets/images/timesSquare.jpg",
+    },
+    {
+      "title": "Statue of Liberty",
+      "subtitle": "Historic landmark",
+      "rating": 4.9,
+      "image": "assets/images/statueOfLiberty.jpg",
+    },
+  ];
 
   final List<Map<String, dynamic>> categories = [
-    {"name": "All", "isSelected": true},
-    {"name": "Asia", "isSelected": false},
-    {"name": "Europe", "isSelected": false},
-    {"name": "America", "isSelected": false},
-    {"name": "Oceania", "isSelected": false},
+    {"name": "Attractions", "icon": "assets/images/mountain.png"},
+    {"name": "Food", "icon": "assets/images/Beach.png"},
+    {"name": "Events", "icon": "assets/images/History.png"},
   ];
 
-  final List<Map<String, dynamic>> destinations = [
+  final List<Map<String, dynamic>> recommendations = [
     {
-      "country": "Maldives",
-      "city": "South Asia",
+      "title": "Rooftop Dinner",
+      "subtitle": "Skyline view restaurant",
       "rating": 4.6,
-      "image":
-          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
+      "image": "assets/images/rooftopDinner.jpeg",
     },
     {
-      "country": "Kashmir",
-      "city": "India",
+      "title": "Broadway Show",
+      "subtitle": "Musical performance",
       "rating": 4.8,
-      "image":
-          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800",
-    },
-    {
-      "country": "Bali",
-      "city": "Indonesia",
-      "rating": 4.7,
-      "image":
-          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800",
-    },
-    {
-      "country": "Switzerland",
-      "city": "Europe",
-      "rating": 4.9,
-      "image":
-          "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800",
-    },
-  ];
-  final List<Map<String, dynamic>> explore = [
-    {"category": "Mountains", "image": "assets/images/mountain.png"},
-    {"category": "History", "image": "assets/images/History.png"},
-    {"category": "Beach", "image": "assets/images/Beach.png"},
-  ];
-
-  final List<Map<String, dynamic>> popular = [
-    {
-      "country": "Thailand",
-      "city": "Phuket",
-      "rating": 4.9,
-      "image":
-          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
-    },
-    {
-      "country": "Thailand",
-      "city": "Bangkok",
-      "rating": 4.7,
-      "image":
-          "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800",
+      "image": "assets/images/broadwayShow.jpg",
     },
   ];
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final scale = (screenHeight / 800).clamp(0.85, 1.1);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       bottomNavigationBar: BottomNavigation(),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            physics: const BouncingScrollPhysics(),
-            children: [
-              const SizedBox(height: 10),
-              _buildHeader(),
-              const SizedBox(height: 20),
-              _buildSearchBar(),
-              const SizedBox(height: 25),
-              _buildExclusivePackageSection(context),
-              const SizedBox(height: 25),
-              _buildSectionTitle("Explore Category"),
-              const SizedBox(height: 10),
-              _buildExploreSection(context),
-              const SizedBox(height: 25),
-              RecommendedPackagesSection(),
-              const SizedBox(height: 25),
-              KnowYourWorldSection(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      children: [
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
           children: [
-            Text(
-              "Good Evening",
-              style: AppTextStyles.body.copyWith(
-                fontSize: 16,
-                color: AppColors.textGrey,
-              ),
-            ),
-            Text(
-              "Fatemeh Hamedi",
-              style: AppTextStyles.heading.copyWith(
-                fontSize: 20,
-                color: AppColors.black,
-              ),
-            ),
-            Text(
-              "Explore the world",
-              style: AppTextStyles.heading.copyWith(
-                fontSize: 24,
-                color: AppColors.black,
+            // 🏙️ City Banner
+            _buildCityHeader(context, scale),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  SearchBarWidget(searchtext: "Search in $cityName"),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle("Top Attractions in $cityName"),
+                  const SizedBox(height: 10),
+                  _buildAttractionSection(context),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle("Explore $cityName"),
+                  const SizedBox(height: 10),
+                  _buildCategorySection(context),
+                  const SizedBox(height: 25),
+                  RecommendedPackagesSection(country: 'New York'),
+                ],
               ),
             ),
           ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: "Where you Want to go",
-        hintStyle: AppTextStyles.body.copyWith(
-          color: AppColors.textGrey,
-          fontSize: 16,
-        ),
-        prefixIcon: const Icon(
-          Icons.search_outlined,
-          color: AppColors.textGrey,
-          size: 24,
-          weight: 700,
-        ),
-        filled: true,
-        fillColor: AppColors.inputBackground,
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide.none,
-        ),
       ),
     );
   }
 
-  Widget _buildExclusivePackageSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  // 🏙️ City Header with background image
+  Widget _buildCityHeader(BuildContext context, double scale) {
+    return Stack(
       children: [
-        Text(
-          "Exclusive Package",
-          style: AppTextStyles.heading.copyWith(
-            fontSize: 18,
-            color: AppColors.black,
+        Container(
+          height: 180 * scale,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(cityImage),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        const SizedBox(height: 10),
-
-        // 🌍 Category Chips
-        SizedBox(
-          height: 40,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              bool isSelected = categories[index]["isSelected"];
-              return Container(
-                margin: const EdgeInsets.only(right: 12),
-                color: null,
-                child: FilterChip(
-                  label: Text(
-                    categories[index]["name"],
-                    style: TextStyle(
-                      color: isSelected
-                          ? AppColors.buttonText
-                          : AppColors.textGrey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  showCheckmark: false,
-                  side: BorderSide.none,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  selected: isSelected,
-                  selectedColor: AppColors.primary,
-                  backgroundColor: Colors.white,
-                  onSelected: (_) {},
+        Container(height: 180 * scale, color: Colors.black.withOpacity(0.3)),
+        Positioned(
+          left: 20,
+          bottom: 25,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Explore $cityName",
+                style: AppTextStyles.heading.copyWith(
+                  fontSize: 26 * scale,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // 🧳 Package Cards
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.35,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: destinations.length,
-            clipBehavior: Clip.none,
-            itemBuilder: (context, index) {
-              final item = destinations[index];
-              return GestureDetector(
-                onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
-                child: ExclusivePackageCard(
-                  city: item['city'],
-                  image: item['image'],
-                  country: item['country'],
-                  rating: item['rating'],
+              ),
+              Text(
+                "Discover top attractions & experiences",
+                style: AppTextStyles.body.copyWith(
+                  color: Colors.white.withOpacity(0.9),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  // 🌆 Attractions List
+  Widget _buildAttractionSection(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: screenHeight * 0.32,
+      child: attractions.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: attractions.length,
+              itemBuilder: (context, index) {
+                final item = attractions[index];
+                return GestureDetector(
+                  onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
+                  child: ExclusivePackageCard(
+                    city: item['subtitle'],
+                    image: item['image'],
+                    country: item['title'],
+                    rating: item['rating'],
+                  ),
+                );
+              },
+            ),
+    );
+  }
+
+  // 🗺️ Category Section
+  Widget _buildCategorySection(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return SizedBox(
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final item = categories[index];
+          return Container(
+            width: screenWidth * 0.3,
+            margin: const EdgeInsets.only(right: 15),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.borderLightGrey, width: 2),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(item['icon'], height: 50, width: 50),
+                const SizedBox(height: 6),
+                Text(
+                  item['name'],
+                  style: AppTextStyles.body.copyWith(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textDark,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _buildExploreSection(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    return SizedBox(
-      height: screenHeight * 0.17,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: explore.length,
-        itemBuilder: (context, index) {
-          final item = explore[index];
-          return Container(
-            width: screenWidth * 0.32,
-
-            margin: const EdgeInsets.only(right: 15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: AppColors.borderLightGrey, width: 2),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-
-                children: [
-                  Image.asset(item['image'], height: 80, width: 80),
-                  const SizedBox(height: 8),
-                  Text(
-                    item['category'],
-                    style: AppTextStyles.body.copyWith(
-                      fontSize: 17,
-                      color: AppColors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+      style: AppTextStyles.heading.copyWith(
+        fontSize: 18,
+        color: AppColors.black,
       ),
     );
   }
