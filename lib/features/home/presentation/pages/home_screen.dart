@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/core/widgets/bottom_nevigation.dart';
 import 'package:travique/core/widgets/exclusive_package_card.dart';
 import 'package:travique/core/widgets/know_your_world_section.dart';
 import 'package:travique/core/widgets/recommended_packages_section.dart';
+import 'package:travique/routes/app_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -222,16 +224,18 @@ class HomeScreen extends StatelessWidget {
             clipBehavior: Clip.none,
             itemBuilder: (context, index) {
               final item = destinations[index];
-              return ExclusivePackageCard(
-                city: item['city'],
-                image: item['image'],
-                country: item['country'],
-                rating: item['rating'],
+              return GestureDetector(
+                onTap: () => Get.toNamed(Routes.CITY_DETAILS),
+                child: ExclusivePackageCard(
+                  city: item['city'],
+                  image: item['image'],
+                  country: item['country'],
+                  rating: item['rating'],
+                ),
               );
             },
           ),
         ),
-      
       ],
     );
   }
