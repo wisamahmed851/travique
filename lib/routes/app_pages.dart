@@ -8,8 +8,10 @@ import 'package:travique/features/city/bindings/city_binding.dart';
 import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
 import 'package:travique/features/favorite_places/bindings/favorite_places_binding.dart';
 import 'package:travique/features/favorite_places/presentation/pages/favorite_places_screen.dart';
+import 'package:travique/features/layout/presentation/pages/main_layout.dart';
 import 'package:travique/features/place/bindings/place_binding.dart';
 import 'package:travique/features/place/presentation/pages/place_detail_screen.dart';
+import 'package:travique/features/profile/bindings/profile_binding.dart';
 import 'package:travique/features/splash/presentation/pages/splash_screen.dart';
 import 'package:travique/features/auth/presentation/pages/login_screen.dart';
 import 'package:travique/features/auth/presentation/pages/register_screen.dart';
@@ -60,11 +62,17 @@ class AppPages {
       binding: CityBinding(),
     ),
     GetPage(
+      name: Routes.MAIN_LAYOUT,
+      page: () => const MainLayout(),
+      bindings: [
+        HomeBinding(),
+        FavoritePlacesBinding(),
+        ProfileBinding(),
+      ],
+    ),
+    GetPage(
       name: Routes.HOME,
-      page: () => CityHomeScreen(
-        cityName: "New York",
-        cityImage: "assets/images/newyork.jpeg",
-      ),
+      page: () => CityHomeScreen(),
       binding: HomeBinding(),
     ),
     GetPage(

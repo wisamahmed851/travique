@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'E-project',
       theme: AppTheme.lightTheme,
-      initialRoute: Routes.SPLASH,
+      initialRoute: Routes.MAIN_LAYOUT,
       getPages: AppPages.routes,
     );
   }

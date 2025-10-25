@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
-import 'package:travique/core/widgets/bottom_nevigation.dart';
-import 'package:travique/core/widgets/exclusive_package_card.dart';
-import 'package:travique/core/widgets/recommended_packages_section.dart';
+import 'package:travique/features/home/presentation/widgets/exclusive_package_card.dart';
+import 'package:travique/features/home/presentation/widgets/recommended_packages_section.dart';
 import 'package:travique/core/widgets/search_bar.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class CityHomeScreen extends StatelessWidget {
-  final String cityName;
-  final String cityImage;
+  final String cityName = "New York";
+  final String cityImage = "assets/images/newyork.jpeg";
 
-  CityHomeScreen({Key? key, required this.cityName, required this.cityImage})
-    : super(key: key);
+  CityHomeScreen({Key? key}) : super(key: key);
 
   // ✅ Example sample data — replace later with API data
   final List<Map<String, dynamic>> attractions = [
@@ -65,7 +63,6 @@ class CityHomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      bottomNavigationBar: BottomNavigation(),
       body: SafeArea(
         child: ListView(
           physics: const BouncingScrollPhysics(),

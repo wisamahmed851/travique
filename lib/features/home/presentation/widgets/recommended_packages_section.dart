@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
+import 'package:travique/core/widgets/trip_card.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class RecommendedPackagesSection extends StatefulWidget {
@@ -92,7 +93,7 @@ class _RecommendedPackagesSectionState
               final item = trips[index];
               return GestureDetector(
                 onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
-                child: _buildTripCard(
+                child: TripCard(
                   image: item["image"],
                   title: item["title"],
                   rating: item["rating"],
@@ -131,112 +132,6 @@ class _RecommendedPackagesSectionState
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  // 🏖️ Simplified Card UI
-  Widget _buildTripCard({
-    required String image,
-    required String title,
-    required double rating,
-    required double width,
-  }) {
-    return Container(
-      width: width,
-      margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            // 🖼️ Background Image
-            Image.asset(image, width: width, height: 230, fit: BoxFit.cover),
-
-            // 🌫️ Gradient Overlay
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.6)],
-                  ),
-                ),
-              ),
-            ),
-
-            // 🔖 Bookmark Icon
-            const Positioned(
-              top: 10,
-              right: 10,
-              child: CircleAvatar(
-                radius: 13,
-                backgroundColor: Colors.white70,
-                child: Icon(
-                  Icons.bookmark_border_rounded,
-                  size: 18,
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-
-            // 📍 Title and Rating
-            Positioned(
-              left: 10,
-              right: 10,
-              bottom: 10,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          shadows: [
-                            Shadow(color: Colors.black45, blurRadius: 4),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: List.generate(
-                      5,
-                      (i) => Icon(
-                        i < rating.floor()
-                            ? Icons.star
-                            : Icons.star_border_outlined,
-                        color: Colors.amber,
-                        size: 14,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );
