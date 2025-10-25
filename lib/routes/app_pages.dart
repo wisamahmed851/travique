@@ -5,7 +5,9 @@ import 'package:travique/features/auth/presentation/pages/intro_screen.dart';
 import 'package:travique/features/auth/presentation/pages/new_password.dart';
 import 'package:travique/features/auth/presentation/pages/otp_verifcation.dart';
 import 'package:travique/features/city/bindings/city_binding.dart';
-import 'package:travique/features/city/presentation/pages/city_detail_screen.dart';
+import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
+import 'package:travique/features/place/bindings/place_binding.dart';
+import 'package:travique/features/place/presentation/pages/place_detail_screen.dart';
 import 'package:travique/features/splash/presentation/pages/splash_screen.dart';
 import 'package:travique/features/auth/presentation/pages/login_screen.dart';
 import 'package:travique/features/auth/presentation/pages/register_screen.dart';
@@ -51,14 +53,19 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(
+      name: Routes.CITY_SELECTION,
+      page: () => CitySelectionScreen(),
+      binding: CityBinding(),
+    ),
+    GetPage(
       name: Routes.HOME,
       page: () => HomeScreen(),
       binding: HomeBinding(),
     ),
     GetPage(
-      name: Routes.CITY_DETAILS,
-      page: () => CityDetailScreen(),
-      binding: CityBinding(),
+      name: Routes.PLACE_DETAILS,
+      page: () => PlaceDetailScreen(),
+      binding: PlaceBinding(),
     ),
   ];
 }

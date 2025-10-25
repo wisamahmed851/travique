@@ -6,7 +6,7 @@ class AppTextStyles {
     fontFamily: 'Poppins',
     fontSize: 24,
     fontWeight: FontWeight.w700,
-    color: AppColors.textGrey,
+    color: AppColors.black,
   );
 
   static const TextStyle body = TextStyle(
@@ -14,6 +14,12 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.textDark,
+  );
+  static const TextStyle inputfields = TextStyle(
+    fontFamily: 'Poppins',
+    fontSize: 16,
+    fontWeight: FontWeight.w100,
+    color: AppColors.textGrey,
   );
 
   static const TextStyle button = TextStyle(

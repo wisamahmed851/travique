@@ -225,7 +225,7 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final item = destinations[index];
               return GestureDetector(
-                onTap: () => Get.toNamed(Routes.CITY_DETAILS),
+                onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
                 child: ExclusivePackageCard(
                   city: item['city'],
                   image: item['image'],

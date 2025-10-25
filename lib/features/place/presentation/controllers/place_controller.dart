@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
 
-class CityController extends GetxController {
+class PlaceController extends GetxController {
   var placeName = "Maldives".obs;
 }

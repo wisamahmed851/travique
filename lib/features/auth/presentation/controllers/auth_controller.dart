@@ -21,7 +21,7 @@ class AuthController extends GetxController {
     await Future.delayed(Duration(seconds: 2));
     isLoading.value = false;
     Get.snackbar("Success", "Login Successful");
-    Get.offAllNamed(Routes.HOME);
+    Get.offAllNamed(Routes.CITY_SELECTION);
     // try {
     //   final response = await loginUsecase(
     //     emailController.text,
