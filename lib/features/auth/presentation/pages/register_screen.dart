@@ -194,7 +194,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => Get.offAllNamed(Routes.LOGIN),
+                      onTap: () => Get.toNamed(Routes.LOGIN),
                       child: Text(
                         'Sign in',
                         style: AppTextStyles.link.copyWith(

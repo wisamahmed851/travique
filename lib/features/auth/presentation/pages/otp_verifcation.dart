@@ -58,7 +58,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       if (widget.isPasswordReset) {
         Get.toNamed(Routes.NEW_PASSWORD);
       } else {
-        Get.toNamed(Routes.HOME);
+        Get.toNamed(Routes.CITY_SELECTION);
       }
     }
 

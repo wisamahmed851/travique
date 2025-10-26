@@ -86,7 +86,7 @@ class FavoritePlacesScreen extends StatelessWidget {
       ),
       clipBehavior: Clip.hardEdge,
       child: GestureDetector(
-        onTap: () => Get.offAllNamed(Routes.PLACE_DETAILS),
+        onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
         child: Stack(
           children: [
             // 🌄 Image

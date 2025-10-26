@@ -23,7 +23,7 @@ class BottomNavigation extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
         BottomNavigationBarItem(icon: Icon(Icons.mail), label: 'Inbox'),
-        BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'settings'),
       ],
     );
   }

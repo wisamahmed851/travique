@@ -5,5 +5,6 @@ class LayoutController extends GetxController {
 
   void onChangeTab(int index){
     selectedIndex.value = index;
+    print("selected index $selectedIndex");
   }
 }

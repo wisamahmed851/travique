@@ -16,8 +16,8 @@ class MainLayout extends StatelessWidget {
     final List<Widget> pages = [
       CityHomeScreen(),
       FavoritePlacesScreen(),
-      ProfileScreen(),
       Placeholder(),
+      ProfileScreen(),
     ];
     return Obx(() {
       return Scaffold(
