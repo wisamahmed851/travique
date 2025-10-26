@@ -14,7 +14,6 @@ class CitySelectionScreen extends StatefulWidget {
 }
 
 class _CitySelectionScreenState extends State<CitySelectionScreen> {
-  final TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, String>> cities = [
     {
