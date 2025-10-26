@@ -12,5 +12,7 @@ abstract class Routes {
   static const String PLACE_DETAILS = '/place_details';
   static const String FAVORITE_PLACES = '/favorite_places';
   static const String PROFILE = '/profile';
+  static const String PROFILE_VIEW = '/profile_view';
+  static const String PROFILE_EDIT = '/profile_edit';
 
 }

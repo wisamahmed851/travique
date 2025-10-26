@@ -12,6 +12,8 @@ import 'package:travique/features/layout/presentation/pages/main_layout.dart';
 import 'package:travique/features/place/bindings/place_binding.dart';
 import 'package:travique/features/place/presentation/pages/place_detail_screen.dart';
 import 'package:travique/features/profile/bindings/profile_binding.dart';
+import 'package:travique/features/profile/presentation/pages/profile_edit.screen.dart';
+import 'package:travique/features/profile/presentation/pages/profile_view_screen.dart';
 import 'package:travique/features/splash/presentation/pages/splash_screen.dart';
 import 'package:travique/features/auth/presentation/pages/login_screen.dart';
 import 'package:travique/features/auth/presentation/pages/register_screen.dart';
@@ -84,6 +86,16 @@ class AppPages {
       name: Routes.FAVORITE_PLACES,
       page: () => FavoritePlacesScreen(),
       binding: FavoritePlacesBinding(),
+    ),
+    GetPage(
+      name: Routes.PROFILE_VIEW,
+      page: () => ProfileViewScreen(),
+      // binding: FavoritePlacesBinding(),
+    ),
+    GetPage(
+      name: Routes.PROFILE_EDIT,
+      page: () => ProfileEditScreen(),
+      // binding: FavoritePlacesBinding(),
     ),
   ];
 }
