@@ -70,7 +70,7 @@ class CityHomeScreen extends StatelessWidget {
             // 🏙️ City Banner
             _buildCityHeader(context, scale),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -141,12 +141,13 @@ class CityHomeScreen extends StatelessWidget {
   Widget _buildAttractionSection(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      height: screenHeight * 0.32,
+      height: screenHeight * 0.40,
       child: attractions.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: attractions.length,
+              clipBehavior: Clip.none,
               itemBuilder: (context, index) {
                 final item = attractions[index];
                 return GestureDetector(

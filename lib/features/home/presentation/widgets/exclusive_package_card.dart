@@ -80,30 +80,33 @@ class ExclusivePackageCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${country}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                        color: Colors.black,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        country,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      city,
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 18.5,
+                      const SizedBox(height: 2),
+                      Text(
+                        city,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
+                      // const SizedBox(height: 4),
+                    ],
+                  ),
                 ),
                 // ⭐ Rating
                 Row(
@@ -111,7 +114,7 @@ class ExclusivePackageCard extends StatelessWidget {
                     const Icon(
                       Icons.star_rounded,
                       color: Colors.amber,
-                      size: 22,
+                      size: 20,
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -119,7 +122,7 @@ class ExclusivePackageCard extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
                     ),
                   ],
@@ -127,6 +130,7 @@ class ExclusivePackageCard extends StatelessWidget {
               ],
             ),
           ),
+        
         ],
       ),
     );
