@@ -55,13 +55,13 @@ class PrimaryButton extends StatelessWidget {
                   )
                 : BorderSide.none,
           ),
-          padding: EdgeInsets.symmetric(vertical: 16 * scale),
+          padding: EdgeInsets.symmetric(vertical: 14),
         ),
         onPressed: onPressed,
         child: Text(
           text,
           style: AppTextStyles.button.copyWith(
-            fontSize: 20 * scale,
+            fontSize: 16,
             color: txtColor,
           ),
         ),

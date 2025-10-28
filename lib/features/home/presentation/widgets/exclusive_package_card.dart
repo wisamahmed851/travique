@@ -43,7 +43,7 @@ class ExclusivePackageCard extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                 child: Image.asset(
                   image,
-                  height: 200,
+                  height: 180,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
@@ -92,7 +92,7 @@ class ExclusivePackageCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 18,
+                          fontSize: 14,
                           color: Colors.black,
                         ),
                       ),
@@ -101,7 +101,7 @@ class ExclusivePackageCard extends StatelessWidget {
                         city,
                         style: TextStyle(
                           color: Colors.grey.shade600,
-                          fontSize: 14,
+                          fontSize: 12,
                         ),
                       ),
                       // const SizedBox(height: 4),
@@ -114,7 +114,7 @@ class ExclusivePackageCard extends StatelessWidget {
                     const Icon(
                       Icons.star_rounded,
                       color: Colors.amber,
-                      size: 20,
+                      size: 14,
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -122,7 +122,7 @@ class ExclusivePackageCard extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
-                        fontSize: 18,
+                        fontSize: 14,
                       ),
                     ),
                   ],

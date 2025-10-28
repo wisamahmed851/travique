@@ -8,13 +8,17 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      style: AppTextStyles.body.copyWith(
+        color: AppColors.textDark
+      ),
       decoration: InputDecoration(
         hintText: searchtext,
         hintStyle: AppTextStyles.body.copyWith(
           color: AppColors.textGrey,
-          fontSize: 16,
+          fontSize: 14,
         ),
         prefixIcon: const Icon(Icons.search, color: AppColors.textGrey),
+        // contentPadding: const EdgeInsets.symmetric(vertical: 10),
         filled: true,
         fillColor: AppColors.inputBackground,
         border: OutlineInputBorder(

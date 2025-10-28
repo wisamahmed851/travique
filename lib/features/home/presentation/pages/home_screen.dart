@@ -141,7 +141,7 @@ class CityHomeScreen extends StatelessWidget {
   Widget _buildAttractionSection(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      height: screenHeight * 0.40,
+      height: screenHeight * 0.3,
       child: attractions.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -175,7 +175,7 @@ class CityHomeScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = categories[index];
           return Container(
-            width: screenWidth * 0.3,
+            width: screenWidth * 0.27,
             margin: const EdgeInsets.only(right: 15),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.borderLightGrey, width: 2),
@@ -184,12 +184,12 @@ class CityHomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(item['icon'], height: 50, width: 50),
+                Image.asset(item['icon'], height: 40, width: 40),
                 const SizedBox(height: 6),
                 Text(
                   item['name'],
                   style: AppTextStyles.body.copyWith(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textDark,
                   ),
@@ -206,7 +206,7 @@ class CityHomeScreen extends StatelessWidget {
     return Text(
       title,
       style: AppTextStyles.heading.copyWith(
-        fontSize: 18,
+        fontSize: 16,
         color: AppColors.black,
       ),
     );
