@@ -56,7 +56,7 @@ class _RecommendedPackagesSectionState
         Text(
           "Recommended Packages in $country",
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w700,
             color: Colors.black87,
           ),

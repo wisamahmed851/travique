@@ -144,13 +144,13 @@ class ProfileScreen extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       horizontalTitleGap: 12,
-      leading: Icon(icon, color: iconColor ?? AppColors.primary, size: 30),
+      leading: Icon(icon, color: iconColor ?? AppColors.primary, size: 25),
       title: Text(
         label,
         style: AppTextStyles.body.copyWith(
           fontWeight: FontWeight.w600,
           color: AppColors.textDark,
-          fontSize: 17,
+          fontSize: 15,
         ),
       ),
       onTap: route,

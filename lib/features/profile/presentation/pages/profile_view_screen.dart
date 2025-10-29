@@ -62,13 +62,14 @@ class ProfileViewScreen extends StatelessWidget {
                     children: [
                       Text(
                         "Hi, Jit Banik!",
-                        style: AppTextStyles.heading.copyWith(fontSize: 22),
+                        style: AppTextStyles.heading.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         "Joined  –  Mar 2021",
                         style: AppTextStyles.inputfields.copyWith(
                           color: AppColors.textGrey,
+                          fontSize: 14
                         ),
                       ),
                     ],
@@ -124,21 +125,21 @@ class ProfileViewScreen extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.facebook,
-                        size: 32,
+                        size: 25,
                         color: AppColors.primary,
                       ),
                       const SizedBox(width: 16),
                       Text(
                         "Connect Facebook",
                         style: AppTextStyles.link.copyWith(
-                          fontSize: 18,
+                          fontSize: 16,
                           color: AppColors.black,
                         ),
                       ),
                       const Spacer(),
                       const Icon(
                         Icons.arrow_forward_ios_rounded,
-                        size: 18,
+                        size: 17,
                         color: AppColors.textGrey,
                       ),
                     ],
