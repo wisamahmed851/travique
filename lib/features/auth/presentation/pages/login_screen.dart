@@ -63,46 +63,71 @@ class LoginScreen extends StatelessWidget {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  style: AppTextStyles.body.copyWith(
-                    fontSize: 16 * scale,
-                  ),
+                  style: AppTextStyles.body.copyWith(fontSize: 16 * scale),
                 ),
                 SizedBox(height: 16 * scale),
 
                 // 🔒 Password Field
-                Obx(() => TextField(
-                      controller: controller.passwordController,
-                      obscureText: controller.isPasswordHidden.value,
-                      decoration: InputDecoration(
-                        hintText: 'Your password',
-                        hintStyle: AppTextStyles.body.copyWith(
+                Obx(
+                  () => TextField(
+                    controller: controller.passwordController,
+                    obscureText: controller.isPasswordHidden.value,
+                    decoration: InputDecoration(
+                      hintText: 'Your password',
+                      hintStyle: AppTextStyles.body.copyWith(
+                        color: Colors.grey[500],
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 16 * scale,
+                        horizontal: 16 * scale,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordHidden.value
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.grey[500],
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 16 * scale,
-                          horizontal: 16 * scale,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordHidden.value
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: Colors.grey[500],
-                          ),
-                          onPressed: controller.togglePasswordVisibility,
-                        ),
+                        onPressed: controller.togglePasswordVisibility,
                       ),
-                      style: AppTextStyles.body.copyWith(
+                    ),
+                    style: AppTextStyles.body.copyWith(fontSize: 16 * scale),
+                  ),
+                ),
+                SizedBox(height: 20 * scale),
+                // 🌐 Google Sign-In Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 52 * scale,
+                  child: OutlinedButton.icon(
+                    icon: Image.asset(
+                      'assets/images/google_logo.png', // place a small Google icon here
+                      height: 24 * scale,
+                    ),
+                    label: Text(
+                      'Sign in with Google',
+                      style: AppTextStyles.button.copyWith(
+                        color: Colors.black87,
                         fontSize: 16 * scale,
                       ),
-                    )),
-                SizedBox(height: 20 * scale),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey.shade400),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: controller
+                        .googleSignIn, // 👈 calls the controller method
+                  ),
+                ),
+                SizedBox(height: 22 * scale),
 
                 // 🔵 Sign In Button
                 SizedBox(
