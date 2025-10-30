@@ -102,32 +102,32 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20 * scale),
                 // 🌐 Google Sign-In Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 52 * scale,
-                  child: OutlinedButton.icon(
-                    icon: Image.asset(
-                      'assets/images/google_logo.png', // place a small Google icon here
-                      height: 24 * scale,
-                    ),
-                    label: Text(
-                      'Sign in with Google',
-                      style: AppTextStyles.button.copyWith(
-                        color: Colors.black87,
-                        fontSize: 16 * scale,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.grey.shade400),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onPressed: controller
-                        .googleSignIn, // 👈 calls the controller method
-                  ),
-                ),
-                SizedBox(height: 22 * scale),
+                // SizedBox(
+                //   width: double.infinity,
+                //   height: 52 * scale,
+                //   child: OutlinedButton.icon(
+                //     icon: Image.asset(
+                //       'assets/images/google_logo.png', // place a small Google icon here
+                //       height: 24 * scale,
+                //     ),
+                //     label: Text(
+                //       'Sign in with Google',
+                //       style: AppTextStyles.button.copyWith(
+                //         color: Colors.black87,
+                //         fontSize: 16 * scale,
+                //       ),
+                //     ),
+                //     style: OutlinedButton.styleFrom(
+                //       side: BorderSide(color: Colors.grey.shade400),
+                //       shape: RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(8),
+                //       ),
+                //     ),
+                //     onPressed: (){}, // 👈 calls the controller method
+                //   ),
+                // ),
+                
+                // SizedBox(height: 22 * scale),
 
                 // 🔵 Sign In Button
                 SizedBox(

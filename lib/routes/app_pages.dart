@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:travique/core/middlewares/auth_middleware.dart';
 import 'package:travique/features/auth/bindings/auth_binding.dart';
 import 'package:travique/features/auth/presentation/pages/forget_password.dart';
 import 'package:travique/features/auth/presentation/pages/intro_screen.dart';
@@ -27,17 +28,14 @@ class AppPages {
     GetPage(
       name: Routes.INTRO,
       page: () => IntroScreen(),
-      binding: AuthBinding(),
     ),
     GetPage(
       name: Routes.LOGIN,
       page: () => LoginScreen(),
-      binding: AuthBinding(),
     ),
     GetPage(
       name: Routes.SIGNUP,
       page: () => RegisterScreen(),
-      binding: AuthBinding(),
     ),
     GetPage(
       name: Routes.OTP_VERIFICATION,
@@ -46,17 +44,14 @@ class AppPages {
         final bool isPasswordReset = args?['isPasswordReset'] ?? false;
         return OtpVerificationScreen(isPasswordReset: isPasswordReset);
       },
-      binding: AuthBinding(),
     ),
     GetPage(
       name: Routes.FORGOT_PASSWORD,
       page: () => ForgetPassword(),
-      binding: AuthBinding(),
     ),
     GetPage(
       name: Routes.NEW_PASSWORD,
       page: () => NewPassword(),
-      binding: AuthBinding(),
     ),
     GetPage(
       name: Routes.CITY_SELECTION,
@@ -71,6 +66,7 @@ class AppPages {
         FavoritePlacesBinding(),
         ProfileBinding(),
       ],
+      middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: Routes.HOME,

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:travique/core/service/storage_service.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final LoginUsecase loginUsecase;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  AuthController(this.loginUsecase);
-
+  final RegisterUsecase registerUsecase;
+  // final GoogleSignIn _googleSignIn = GoogleSignIn();
+  AuthController(this.loginUsecase, this.registerUsecase);
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   var isLoading = false.obs;
   var isPasswordHidden = true.obs;
 
@@ -19,11 +23,11 @@ class AuthController extends GetxController {
   }
 
   Future<void> login() async {
-    isLoading.value = true;
-    await Future.delayed(Duration(seconds: 2));
-    isLoading.value = false;
-    Get.snackbar("Success", "Login Successful");
-    Get.offAllNamed(Routes.CITY_SELECTION);
+    // isLoading.value = true;
+    // await Future.delayed(Duration(seconds: 2));
+    // isLoading.value = false;
+    // Get.snackbar("Success", "Login Successful");
+    // Get.offAllNamed(Routes.CITY_SELECTION);
     try {
       final response = await loginUsecase(
         emailController.text,
@@ -31,8 +35,9 @@ class AuthController extends GetxController {
       );
       print(response);
       if (response['data']['access_token'] != null) {
+        await StorageService.saveToken(response['data']['access_token']);
         Get.snackbar("Success", "Login Successful");
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.MAIN_LAYOUT);
       } else {
         Get.snackbar("Error", "Invalid Credentials");
       }
@@ -51,7 +56,7 @@ class AuthController extends GetxController {
   //   super.onClose();
   // }
 
-  Future<void> googleSignIn() async {
+  /* Future<void> googleSignIn() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -73,6 +78,30 @@ class AuthController extends GetxController {
     } catch (e) {
       print("❌ Google Sign-In Error: $e");
       Get.snackbar("Error", "Failed to sign in with Google");
+    }
+  } */
+
+  Future<void> register() async {
+    isLoading.value = true;
+    try {
+      final response = await registerUsecase(
+        nameController.text,
+        emailController.text,
+        passwordController.text,
+        confirmPasswordController.text,
+      );
+      print(response);
+      if (response['success'] = true) {
+        Get.snackbar('success', response['message']);
+      }
+      if (response['success'] == false) {
+        Get.snackbar("Error", response['message']);
+      }
+      return null;
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 }
