@@ -45,7 +45,7 @@ class RegisterScreen extends StatelessWidget {
 
                 // ✉️ Name Field
                 TextField(
-                  controller: controller.emailController,
+                  controller: controller.nameController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Your Name',
@@ -126,7 +126,7 @@ class RegisterScreen extends StatelessWidget {
                 SizedBox(height: 20 * scale),
                 Obx(
                   () => TextField(
-                    controller: controller.passwordController,
+                    controller: controller.confirmPasswordController,
                     obscureText: controller.isPasswordHidden.value,
                     decoration: InputDecoration(
                       hintText: 'Re-Password',
@@ -170,7 +170,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    onPressed: controller.login,
+                    onPressed: controller.register,
                     child: Text(
                       'Sign in',
                       style: AppTextStyles.button.copyWith(

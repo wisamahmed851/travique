@@ -97,11 +97,13 @@ class AuthController extends GetxController {
       if (response['success'] == false) {
         Get.snackbar("Error", response['message']);
       }
-      return null;
+      // return null;
     } catch (e) {
+      print("Error: ${e.toString()}");
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
   }
+
 }

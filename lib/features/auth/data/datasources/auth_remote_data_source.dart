@@ -36,6 +36,7 @@ class AuthRemoteDataSource {
       'password': password,
       'confirm_password': confirmPassword,
     });
+    print(response.body['message']);
     if (response.status.hasError) {
       print("Api error: ${response.statusCode}");
       print("Api message: ${response.body['message']}");
