@@ -4,15 +4,22 @@ import 'package:travique/core/service/storage_service.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/verification_usecase.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final LoginUsecase loginUsecase;
   final RegisterUsecase registerUsecase;
+  final VerificationUsecase verificationUsecase;
   // final GoogleSignIn _googleSignIn = GoogleSignIn();
-  AuthController(this.loginUsecase, this.registerUsecase);
+  AuthController(
+    this.loginUsecase,
+    this.registerUsecase,
+    this.verificationUsecase,
+  );
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final otpController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   var isLoading = false.obs;
@@ -92,6 +99,10 @@ class AuthController extends GetxController {
       );
       print(response);
       if (response['success'] = true) {
+        Get.toNamed(
+          Routes.OTP_VERIFICATION,
+          arguments: {'isPasswordReset': true},
+        );
         Get.snackbar('success', response['message']);
       }
       if (response['success'] == false) {
@@ -106,4 +117,21 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> otpVerification(String otp) async {
+    isLoading.value = true;
+    try {
+      final result = await verificationUsecase(emailController.text, otp);
+      print(result);
+      if (result['success'] == true) {
+        Get.snackbar("success", result['message']);
+        Get.toNamed(Routes.MAIN_LAYOUT);
+      }
+      if (result['success'] == false) {
+        Get.snackbar("Error", result['message']);
+      }
+    } catch (e) {
+      debugPrint("Error: ${e.toString()}");
+      Get.snackbar("Error", e.toString());
+    }
+  }
 }

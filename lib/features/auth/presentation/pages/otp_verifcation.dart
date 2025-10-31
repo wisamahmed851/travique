@@ -54,12 +54,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       Get.snackbar("Error", "Please enter the complete OTP");
       return;
     } else {
-      Get.snackbar("Success", "OTP Verified Successfully");
-      if (widget.isPasswordReset) {
-        Get.toNamed(Routes.NEW_PASSWORD);
-      } else {
-        Get.toNamed(Routes.CITY_SELECTION);
-      }
+      controller.otpVerification(otp);
+      // Get.snackbar("Success", "OTP Verified Successfully");
+      // if (widget.isPasswordReset) {
+      //   Get.toNamed(Routes.NEW_PASSWORD);
+      // } else {
+      //   Get.toNamed(Routes.CITY_SELECTION);
+      // }
     }
 
     // if (widget.isPasswordReset) {

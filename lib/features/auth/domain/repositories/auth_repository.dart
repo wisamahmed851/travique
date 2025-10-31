@@ -7,4 +7,8 @@ abstract class AuthRepository {
     String password,
     String confirmPassword,
   );
+  Future<Map<String, dynamic>> otpVerification(
+    String email,
+    String otp,
+  );
 }
