@@ -9,6 +9,7 @@ abstract class Routes {
   static const String CITY_SELECTION = '/city_selection';
   static const String MAIN_LAYOUT = '/main_layout';
   static const String HOME = '/home';
+  static const String HOME2 = '/home2';
   static const String PLACE_DETAILS = '/place_details';
   static const String FAVORITE_PLACES = '/favorite_places';
   static const String PROFILE = '/profile';

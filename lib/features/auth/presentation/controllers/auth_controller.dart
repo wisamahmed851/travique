@@ -22,6 +22,10 @@ class AuthController extends GetxController {
   final otpController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final loginemailController = TextEditingController();
+  final loginpasswordController = TextEditingController();
+  final verificationemailController = TextEditingController(); 
+  final verificationotpController = TextEditingController(); 
   var isLoading = false.obs;
   var isPasswordHidden = true.obs;
 
@@ -30,26 +34,42 @@ class AuthController extends GetxController {
   }
 
   Future<void> login() async {
-    // isLoading.value = true;
-    // await Future.delayed(Duration(seconds: 2));
-    // isLoading.value = false;
-    // Get.snackbar("Success", "Login Successful");
-    // Get.offAllNamed(Routes.CITY_SELECTION);
+    isLoading.value = true;
+
     try {
       final response = await loginUsecase(
-        emailController.text,
-        passwordController.text,
+        loginemailController.text,
+        loginpasswordController.text,
       );
-      print(response);
-      if (response['data']['access_token'] != null) {
-        await StorageService.saveToken(response['data']['access_token']);
-        Get.snackbar("Success", "Login Successful");
-        Get.offAllNamed(Routes.MAIN_LAYOUT);
+
+      debugPrint("Login response: $response");
+
+      final bool success = response['success'] ?? false;
+      final String message = response['message'] ?? '';
+      final data = response['data'] ?? {};
+
+      if (success) {
+        if (data['access_token'] != null) {
+          await StorageService.saveToken(data['access_token']);
+          Get.snackbar("Success", "Login Successful");
+          Get.offAllNamed(Routes.MAIN_LAYOUT);
+        } else if (message.contains("Account not verified")) {
+          Get.snackbar("Info", message);
+          var email = data['email'] ?? loginemailController.text; 
+          debugPrint("email thats going to the otp: $email");
+          Get.offAllNamed(
+            Routes.OTP_VERIFICATION,
+            arguments: {
+              'isPasswordReset': false,
+              'email': email,
+            },
+          );
+        }
       } else {
-        Get.snackbar("Error", "Invalid Credentials");
+        Get.snackbar("Error", message.isNotEmpty ? message : "Login failed");
       }
     } catch (e) {
-      print("Error during login: ${e.toString()}");
+      debugPrint("Error during login: ${e.toString()}");
       Get.snackbar("Login Failed", e.toString());
     } finally {
       isLoading.value = false;
@@ -90,6 +110,7 @@ class AuthController extends GetxController {
 
   Future<void> register() async {
     isLoading.value = true;
+
     try {
       final response = await registerUsecase(
         nameController.text,
@@ -97,20 +118,34 @@ class AuthController extends GetxController {
         passwordController.text,
         confirmPasswordController.text,
       );
-      print(response);
-      if (response['success'] = true) {
+
+      debugPrint("Register response: $response");
+
+      final bool success = response['success'] ?? false;
+      final String message = response['message'] ?? '';
+      final data = response['data'] ?? {};
+
+      if (success) {
+        // ✅ Registration successful → Go to OTP verification
+        Get.snackbar(
+          "Success",
+          message.isNotEmpty
+              ? message
+              : "Registration successful. Please verify your email.",
+        );
         Get.toNamed(
           Routes.OTP_VERIFICATION,
-          arguments: {'isPasswordReset': true},
+          arguments: {'isPasswordReset': true, 'email': emailController.text},
         );
-        Get.snackbar('success', response['message']);
+      } else {
+        // ❌ Validation or other backend error
+        Get.snackbar(
+          "Error",
+          message.isNotEmpty ? message : "Registration failed",
+        );
       }
-      if (response['success'] == false) {
-        Get.snackbar("Error", response['message']);
-      }
-      // return null;
     } catch (e) {
-      print("Error: ${e.toString()}");
+      debugPrint("Error during register: ${e.toString()}");
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
@@ -119,19 +154,41 @@ class AuthController extends GetxController {
 
   Future<void> otpVerification(String otp) async {
     isLoading.value = true;
+
     try {
-      final result = await verificationUsecase(emailController.text, otp);
-      print(result);
-      if (result['success'] == true) {
-        Get.snackbar("success", result['message']);
-        Get.toNamed(Routes.MAIN_LAYOUT);
-      }
-      if (result['success'] == false) {
-        Get.snackbar("Error", result['message']);
+      final result = await verificationUsecase(verificationemailController.text, otp);
+      debugPrint("🔍 OTP Verification Result: $result");
+
+      final bool success = result['success'] ?? false;
+      final String message = result['message'] ?? '';
+      final data = result['data'] ?? {};
+
+      if (success) {
+        final user = data['user'];
+        final token = data['access_token'];
+
+        // ✅ Save the token for authenticated API calls
+        await StorageService.saveToken(token);
+
+        // (Optional) save user info if needed
+        // await StorageService.saveUser(user);
+
+        Get.snackbar(
+          "Success",
+          message.isNotEmpty ? message : "Account verified successfully",
+        );
+        Get.offAllNamed(Routes.MAIN_LAYOUT); // replace navigation stack
+      } else {
+        Get.snackbar(
+          "Error",
+          message.isNotEmpty ? message : "OTP verification failed",
+        );
       }
     } catch (e) {
-      debugPrint("Error: ${e.toString()}");
+      debugPrint("❌ Error during OTP verification: ${e.toString()}");
       Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 }

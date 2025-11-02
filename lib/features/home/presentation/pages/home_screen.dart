@@ -141,7 +141,7 @@ class CityHomeScreen extends StatelessWidget {
   Widget _buildAttractionSection(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      height: screenHeight * 0.35,
+      height: /* screenHeight * 0.33 */ 270,
       child: attractions.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(

@@ -103,8 +103,7 @@ class ForgetPassword extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () => Get.toNamed(
-                      Routes.OTP_VERIFICATION,
-                      arguments: {'isPasswordReset': false},
+                      Routes.MAIN_LAYOUT,
                     ),
                     child: Text(
                       'Sent Code',

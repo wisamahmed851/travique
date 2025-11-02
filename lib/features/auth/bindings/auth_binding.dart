@@ -14,12 +14,14 @@ class AuthBinding extends Bindings {
     Get.lazyPut<AuthRepository>(() => AuthRepositoryImpl(Get.find()));
     Get.lazyPut(() => LoginUsecase(Get.find()));
     Get.lazyPut(() => RegisterUsecase(Get.find()));
-    Get.lazyPut(
-      () => AuthController(
+    Get.lazyPut(() => VerificationUsecase(Get.find()));
+    Get.put(
+      AuthController(
         Get.find<LoginUsecase>(),
         Get.find<RegisterUsecase>(),
         Get.find<VerificationUsecase>(),
       ),
+      permanent: true,
     );
   }
 }

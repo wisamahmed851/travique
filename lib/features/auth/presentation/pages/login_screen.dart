@@ -45,7 +45,7 @@ class LoginScreen extends StatelessWidget {
 
                 // ✉️ Email Field
                 TextField(
-                  controller: controller.emailController,
+                  controller: controller.loginemailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Your email',
@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                 // 🔒 Password Field
                 Obx(
                   () => TextField(
-                    controller: controller.passwordController,
+                    controller: controller.loginpasswordController,
                     obscureText: controller.isPasswordHidden.value,
                     decoration: InputDecoration(
                       hintText: 'Your password',

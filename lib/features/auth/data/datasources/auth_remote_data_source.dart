@@ -1,30 +1,45 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:travique/core/constants/api_constants.dart';
 import 'package:travique/core/service/api_client.dart';
+import 'package:http/http.dart' as http;
 
 class AuthRemoteDataSource {
   final ApiClient _apiClient = ApiClient();
+  final _apiClients = GetConnect();
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    print("staring and api with $email, password: $password");
-    final response = await _apiClient.post(ApiConstants.loginEndpoint, {
-      'email': email,
-      'password': password,
+    final url = Uri.parse(ApiConstants.loginEndpoint);
+    final body = jsonEncode({
+      'email': email.trim(),
+      'password': password.trim(),
     });
-    debugPrint(response.body);
-    if (response.status.hasError) {
-      print("API Error: ${response.statusText}");
-      print("Error Message: ${response.body['message']}");
-      throw Exception(response.body['message'] ?? "Login Failed");
-    }
-    if (response.body['success'] == false) {
-      print("Login Error: ${response.body['message']}");
-      throw Exception(response.body['message'] ?? "Login Failed");
-    }
 
-    return response.body;
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      debugPrint("📡 Login API called: ${response.statusCode}");
+      debugPrint("Response body: ${response.body}");
+
+      // decode safely
+      final Map<String, dynamic> decoded = jsonDecode(response.body);
+
+      // Your backend always returns { success, message, data }
+      return decoded;
+    } catch (e) {
+      debugPrint("❌ Login API Error: $e");
+      return {
+        "success": false,
+        "message": "Unable to connect to server",
+        "data": {},
+      };
+    }
   }
 
   Future<Map<String, dynamic>> register(
@@ -33,67 +48,64 @@ class AuthRemoteDataSource {
     String password,
     String confirmPassword,
   ) async {
-    final response = await _apiClient.post(ApiConstants.registerEndpoint, {
-      'name': name,
-      'email': email,
+    final url = Uri.parse(ApiConstants.registerEndpoint);
+    final body = jsonEncode({
+      'name': name.trim(),
+      'email': email.trim(),
       'password': password,
       'confirm_password': confirmPassword,
     });
-    print("Status: ${response.statusCode}");
-    print("Raw body string: ${response.bodyString}");
 
-    // Manual decoding in case GetConnect still fails
-    final Map<String, dynamic> body =
-        response.body ??
-        (response.bodyString != null
-            ? Map<String, dynamic>.from(jsonDecode(response.bodyString!))
-            : {});
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
 
-    print("Message: ${body['message']}");
-    return body;
+      debugPrint("📡 Register API called: ${response.statusCode}");
+      debugPrint("Response body: ${response.body}");
 
-    // print("Raw string: ${response.bodyString}");
-
-    // final Map<String, dynamic> decoded = json.decode(
-    //   response.bodyString ?? '{}',
-    // );
-
-    // print("Decoded message: ${decoded['message']}");
-
-    // // if (response.body == null) {
-    // //   print("Null response body. Status: ${response.statusCode}");
-    // //   throw Exception("No response from server");
-    // // }
-    // // if (response.status.hasError) {
-    // //   print("Api error: ${response.statusCode}");
-    // //   throw Exception(response.body['message'] ?? 'Login Failed');
-    // // }
-    // // ✅ Business logic failure
-    // // if (response.body['success'] == false) {
-    // //   print("API failure: ${response.body['message']}");
-    // //   throw Exception(response.body['message'] ?? 'Registration failed');
-    // // }
-    // print("Body message ${response.body['message']}");
-    // print("Body status ${response.body['success']}");
-    // return response.body;
+      final Map<String, dynamic> decoded = jsonDecode(response.body);
+      return decoded;
+    } catch (e) {
+      debugPrint("❌ Register API Error: $e");
+      return {
+        "success": false,
+        "message": "Unable to connect to server",
+        "data": {},
+      };
+    }
   }
 
   Future<Map<String, dynamic>> otpVerification(String email, String otp) async {
-    final response = await _apiClient.post(
-      ApiConstants.emailVerificationEndpoint,
-      {'email': email, 'otp': otp},
-    );
+    final url = Uri.parse(ApiConstants.emailVerificationEndpoint);
+    final body = jsonEncode({'email': email.trim(), 'otp': otp.trim()});
 
-    debugPrint(response.body);
+    try {
+      debugPrint("email body: ${body.toString()}");
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
 
-    if (response.status.hasError) {
-      debugPrint("Api Error: ${response.statusText}");
-      throw Exception(response.body['message'] ?? "Otp verification Failed");
+      debugPrint("📡 OTP Verification API => ${response.statusCode}");
+      debugPrint("Response => ${response.body}");
+
+      final Map<String, dynamic> decoded = jsonDecode(response.body);
+
+      // Always return consistent structure
+      return decoded;
+    } catch (e) {
+      debugPrint("❌ OTP Verification Error: $e");
+      return {
+        "success": false,
+        "message": "Unable to connect to server",
+        "data": {},
+      };
     }
-    if (response.body['success'] == false) {
-      debugPrint('succes fasle: ${response.body['message']}');
-      throw Exception('Success failed ${response.body['message']}');
-    }
-    return response.body;
   }
+
+
 }

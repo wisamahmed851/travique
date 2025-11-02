@@ -20,6 +20,7 @@ import 'package:travique/features/auth/presentation/pages/login_screen.dart';
 import 'package:travique/features/auth/presentation/pages/register_screen.dart';
 import 'package:travique/features/home/bindings/home_binding.dart';
 import 'package:travique/features/home/presentation/pages/home_screen.dart';
+import 'package:travique/features/home/presentation/pages/home2_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -42,7 +43,8 @@ class AppPages {
       page: () {
         final args = Get.arguments as Map<String, dynamic>?;
         final bool isPasswordReset = args?['isPasswordReset'] ?? false;
-        return OtpVerificationScreen(isPasswordReset: isPasswordReset);
+        final String email = args?['email'] ?? false;
+        return OtpVerificationScreen(isPasswordReset: isPasswordReset, email: email,);
       },
     ),
     GetPage(
@@ -66,11 +68,16 @@ class AppPages {
         FavoritePlacesBinding(),
         ProfileBinding(),
       ],
-      middlewares: [AuthMiddleware()],
+      // middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: Routes.HOME,
       page: () => CityHomeScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: Routes.HOME2,
+      page: () => Home2Screen(),
       binding: HomeBinding(),
     ),
     GetPage(
