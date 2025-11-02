@@ -3,17 +3,16 @@ import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:travique/routes/app_routes.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final bool isPasswordReset;
   final String email; 
 
   const OtpVerificationScreen({
-    Key? key,
+    super.key,
     required this.isPasswordReset,
     required this.email,
-  }) : super(key: key);
+  });
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -66,7 +65,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     try {
       if (widget.isPasswordReset) {
-        await controller.otpVerification(otp);
+        await controller.passwordResetOtp(otp);
       } else {
         await controller.otpVerification(otp);
       }

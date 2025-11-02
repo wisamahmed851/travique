@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/service/storage_service.dart';
+import 'package:travique/features/auth/domain/usecases/forgot_password_usecase.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
@@ -11,11 +12,13 @@ class AuthController extends GetxController {
   final LoginUsecase loginUsecase;
   final RegisterUsecase registerUsecase;
   final VerificationUsecase verificationUsecase;
+  final ForgotPasswordUseCase forgotPasswordUseCase;
   // final GoogleSignIn _googleSignIn = GoogleSignIn();
   AuthController(
     this.loginUsecase,
     this.registerUsecase,
     this.verificationUsecase,
+    this.forgotPasswordUseCase,
   );
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -24,8 +27,9 @@ class AuthController extends GetxController {
   final confirmPasswordController = TextEditingController();
   final loginemailController = TextEditingController();
   final loginpasswordController = TextEditingController();
-  final verificationemailController = TextEditingController(); 
-  final verificationotpController = TextEditingController(); 
+  final verificationemailController = TextEditingController();
+  final verificationotpController = TextEditingController();
+  final forgotPasswordEmailController = TextEditingController();
   var isLoading = false.obs;
   var isPasswordHidden = true.obs;
 
@@ -55,14 +59,11 @@ class AuthController extends GetxController {
           Get.offAllNamed(Routes.MAIN_LAYOUT);
         } else if (message.contains("Account not verified")) {
           Get.snackbar("Info", message);
-          var email = data['email'] ?? loginemailController.text; 
+          var email = data['email'] ?? loginemailController.text;
           debugPrint("email thats going to the otp: $email");
           Get.offAllNamed(
             Routes.OTP_VERIFICATION,
-            arguments: {
-              'isPasswordReset': false,
-              'email': email,
-            },
+            arguments: {'isPasswordReset': false, 'email': email},
           );
         }
       } else {
@@ -123,7 +124,7 @@ class AuthController extends GetxController {
 
       final bool success = response['success'] ?? false;
       final String message = response['message'] ?? '';
-      final data = response['data'] ?? {};
+      // final data = response['data'] ?? {};
 
       if (success) {
         // ✅ Registration successful → Go to OTP verification
@@ -156,7 +157,11 @@ class AuthController extends GetxController {
     isLoading.value = true;
 
     try {
-      final result = await verificationUsecase(verificationemailController.text, otp);
+      final result = await verificationUsecase(
+        verificationemailController.text,
+        otp,
+        false,
+      );
       debugPrint("🔍 OTP Verification Result: $result");
 
       final bool success = result['success'] ?? false;
@@ -164,7 +169,7 @@ class AuthController extends GetxController {
       final data = result['data'] ?? {};
 
       if (success) {
-        final user = data['user'];
+        // final user = data['user'];
         final token = data['access_token'];
 
         // ✅ Save the token for authenticated API calls
@@ -189,6 +194,65 @@ class AuthController extends GetxController {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> forgotPassword() async {
+    isLoading.value = true;
+    try {
+      final result = await forgotPasswordUseCase(
+        forgotPasswordEmailController.text,
+      );
+
+      debugPrint("result of the forgot password api $result");
+
+      final success = result['success'] ?? false;
+      final message = result['message'];
+      final data = result['data'] ?? {};
+
+      if (success) {
+        if (data != null) {
+          Get.toNamed(
+            Routes.OTP_VERIFICATION,
+            arguments: {'isPasswordReset': true, 'email': data['email']},
+          );
+        }
+      } else {
+        Get.snackbar("Error", message);
+      }
+    } catch (e) {
+      debugPrint("Erro in the api: ${e.toString()}");
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
+  Future<void> passwordResetOtp(String otp) async {
+    isLoading.value = true;
+    
+    try {
+      final result = await verificationUsecase(
+        verificationemailController.text,
+        otp,
+        true,
+      );
+
+      debugPrint("Password Reset result: $result");
+      final success = result['success'] ?? false;
+      final message = result['message'];
+      final data = result['data'] ?? {};
+
+      if (success) {
+        Get.snackbar(success, message);
+        Get.toNamed(Routes.RESET_PASSWORD, arguments: {'email': data['email']});
+      } else {
+        Get.snackbar(
+          'Error',
+          message.isNotEmpty ? message : "Otp Verification failed",
+        );
+      }
+    } catch (e) {
+      debugPrint("Error int he controller ${e.toString()}");
+      Get.snackbar("Error", "Error is : ${e.toString()}");
     }
   }
 }

@@ -4,4 +4,6 @@ class ApiConstants {
   static final String loginEndpoint = '$baseUrl/user/login';
   static final String registerEndpoint = '$baseUrl/user/register';
   static final String emailVerificationEndpoint = '$baseUrl/user/otp/verification';
+  static final String forgotPasswordEndpoint = '$baseUrl/user/forgot-password';
+  static final String resetPasswordEndpoint = '$baseUrl/user/verify-otp';
 }

@@ -10,5 +10,7 @@ abstract class AuthRepository {
   Future<Map<String, dynamic>> otpVerification(
     String email,
     String otp,
+    bool isPasswordReset,
   );
+  Future<Map<String, dynamic>> forgotPassword(String email);
 }

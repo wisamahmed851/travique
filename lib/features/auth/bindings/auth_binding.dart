@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:travique/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:travique/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:travique/features/auth/domain/repositories/auth_repository.dart';
+import 'package:travique/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/verification_usecase.dart';
@@ -15,11 +16,13 @@ class AuthBinding extends Bindings {
     Get.lazyPut(() => LoginUsecase(Get.find()));
     Get.lazyPut(() => RegisterUsecase(Get.find()));
     Get.lazyPut(() => VerificationUsecase(Get.find()));
+    Get.lazyPut(() => ForgotPasswordUseCase(Get.find()));
     Get.put(
       AuthController(
         Get.find<LoginUsecase>(),
         Get.find<RegisterUsecase>(),
         Get.find<VerificationUsecase>(),
+        Get.find<ForgotPasswordUseCase>()
       ),
       permanent: true,
     );

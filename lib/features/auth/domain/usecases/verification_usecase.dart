@@ -5,7 +5,7 @@ class VerificationUsecase {
 
   VerificationUsecase(this.repository);
 
-  Future<Map<String, dynamic>> call(String email, String otp){
-    return repository.otpVerification(email, otp);
+  Future<Map<String, dynamic>> call(String email, String otp, bool isPasswordReset){
+    return repository.otpVerification(email, otp, isPasswordReset);
   }
 }

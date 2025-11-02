@@ -5,6 +5,7 @@ abstract class Routes {
   static const String SIGNUP = '/signup';
   static const String FORGOT_PASSWORD = '/forgot_password';
   static const String NEW_PASSWORD = '/new_password';
+  static const String RESET_PASSWORD = '/reset_password';
   static const String OTP_VERIFICATION = '/otp_verification';
   static const String CITY_SELECTION = '/city_selection';
   static const String MAIN_LAYOUT = '/main_layout';

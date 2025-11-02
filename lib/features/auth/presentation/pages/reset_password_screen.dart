@@ -5,7 +5,19 @@ import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:travique/routes/app_routes.dart';
 
-class ForgetPassword extends StatelessWidget {
+class ResetPasswordScreen extends StatefulWidget {
+  final String email;
+
+  const ResetPasswordScreen({
+    Key? key,
+    required this.email,
+  }) : super(key: key);
+
+  @override
+  State<ResetPasswordScreen> createState() =>_resetPasswordScreenState(); 
+}
+
+class _resetPasswordScreenState extends State<ResetPasswordScreen>{
   final AuthController controller = Get.find();
 
   @override
@@ -42,27 +54,12 @@ class ForgetPassword extends StatelessWidget {
                 // 🏷️ Title
                 Center(
                   child: Text(
-                    'Reset Passwrod',
+                    'New Password',
                     textAlign: TextAlign.center,
                     style: AppTextStyles.heading.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 26 * scale,
                       color: Colors.black87,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 22 * scale),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30 * scale),
-                    child: Text(
-                      'Enter the email address associated with your account',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.body.copyWith(
-                        fontSize: 18 * scale,
-                        color: AppColors.textDarkGrey,
-                        fontWeight: FontWeight.w500,
-                      ),
                     ),
                   ),
                 ),
@@ -72,7 +69,29 @@ class ForgetPassword extends StatelessWidget {
                   controller: controller.emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    hintText: 'Your email',
+                    hintText: 'New password',
+                    hintStyle: AppTextStyles.body.copyWith(
+                      color: Colors.grey[500],
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 16 * scale,
+                      horizontal: 16 * scale,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: AppTextStyles.body.copyWith(fontSize: 16 * scale),
+                ),
+                SizedBox(height: 16 * scale),
+                TextField(
+                  controller: controller.emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: 'Confirm new password',
                     hintStyle: AppTextStyles.body.copyWith(
                       color: Colors.grey[500],
                     ),

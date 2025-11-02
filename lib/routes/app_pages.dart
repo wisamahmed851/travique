@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:travique/core/middlewares/auth_middleware.dart';
 import 'package:travique/features/auth/bindings/auth_binding.dart';
-import 'package:travique/features/auth/presentation/pages/forget_password.dart';
+import 'package:travique/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:travique/features/auth/presentation/pages/intro_screen.dart';
 import 'package:travique/features/auth/presentation/pages/new_password.dart';
 import 'package:travique/features/auth/presentation/pages/otp_verifcation.dart';
+import 'package:travique/features/auth/presentation/pages/reset_password_screen.dart';
 import 'package:travique/features/city/bindings/city_binding.dart';
 import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
 import 'package:travique/features/favorite_places/bindings/favorite_places_binding.dart';
@@ -43,17 +44,26 @@ class AppPages {
       page: () {
         final args = Get.arguments as Map<String, dynamic>?;
         final bool isPasswordReset = args?['isPasswordReset'] ?? false;
-        final String email = args?['email'] ?? false;
+        final String email = args?['email'] ?? '';
         return OtpVerificationScreen(isPasswordReset: isPasswordReset, email: email,);
       },
     ),
     GetPage(
       name: Routes.FORGOT_PASSWORD,
-      page: () => ForgetPassword(),
+      page: () => ForgetPasswordScreen(),
     ),
     GetPage(
       name: Routes.NEW_PASSWORD,
       page: () => NewPassword(),
+    ),
+    GetPage(
+      name: Routes.RESET_PASSWORD,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>?;
+        final String email = args?['email'] ?? '';
+        return ResetPasswordScreen(email: email);
+      },
+
     ),
     GetPage(
       name: Routes.CITY_SELECTION,
