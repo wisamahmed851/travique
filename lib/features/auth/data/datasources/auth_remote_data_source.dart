@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:travique/core/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:travique/core/service/storage_service.dart';
 
 class AuthRemoteDataSource {
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -179,5 +180,32 @@ class AuthRemoteDataSource {
       debugPrint("Error in the api: ${e.toString()}");
       throw Exception(e.toString());
     }
+  }
+
+  Future<Map<String, dynamic>> logout(String token) async {
+    var url = Uri.parse(ApiConstants.logoutEndpoint);
+    var body = jsonEncode({});
+    var token = StorageService.getToken();
+    if (token != null) {
+      try {
+        final response = await http.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: body,
+        );
+
+        debugPrint("Response of the logout: ${response.toString()}");
+
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        return responseData;
+      } catch (e) {
+        throw Exception("Error in the api fetching: ${e.toString()}");
+      }
+    }
+    return {};
   }
 }

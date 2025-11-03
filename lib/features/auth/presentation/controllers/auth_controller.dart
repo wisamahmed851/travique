@@ -4,6 +4,7 @@ import 'package:travique/core/service/storage_service.dart';
 import 'package:travique/features/auth/domain/usecases/forgot_password_usecase.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/verification_usecase.dart';
@@ -15,6 +16,7 @@ class AuthController extends GetxController {
   final VerificationUsecase verificationUsecase;
   final ForgotPasswordUseCase forgotPasswordUseCase;
   final ResetPasswordUsecase resetPasswordUsecase;
+  final LogoutUsecase logoutUsecase;
   // final GoogleSignIn _googleSignIn = GoogleSignIn();
   AuthController(
     this.loginUsecase,
@@ -22,6 +24,7 @@ class AuthController extends GetxController {
     this.verificationUsecase,
     this.forgotPasswordUseCase,
     this.resetPasswordUsecase,
+    this.logoutUsecase,
   );
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -247,7 +250,7 @@ class AuthController extends GetxController {
       final data = result['data'] ?? {};
 
       if (success) {
-        Get.snackbar(success, message);
+        Get.snackbar('success', message);
         Get.toNamed(Routes.RESET_PASSWORD, arguments: {'email': data['email']});
       } else {
         Get.snackbar(
@@ -276,7 +279,7 @@ class AuthController extends GetxController {
       final data = result['data'] ?? {};
 
       if (success) {
-        Get.snackbar(success, message);
+        Get.snackbar('success', message);
         Get.toNamed(Routes.LOGIN);
       } else {
         Get.snackbar(
@@ -287,6 +290,38 @@ class AuthController extends GetxController {
     } catch (e) {
       debugPrint("Error int he controller ${e.toString()}");
       Get.snackbar("Error", "Error is : ${e.toString()}");
+    }
+  }
+
+  Future<void> logut() async {
+    isLoading.value = true;
+
+    try {
+      final isLoggedin = StorageService.isLoggedIn();
+      if (isLoggedin) {
+        final token = StorageService.getToken();
+        if (token != null && token.isNotEmpty) {
+          final result = await logoutUsecase(token);
+
+          final success = result['success'] ?? false;
+          final message = result['message'];
+          final data = result['data'] ?? {};
+
+          if (success) {
+            StorageService.clearToken();
+            Get.snackbar("success", message);
+            Get.offAllNamed(Routes.LOGIN);
+          } else {
+            Get.snackbar('error', message);
+          }
+        } else {
+          debugPrint("No token available to perform logout");
+          Get.snackbar("Error", "No valid session token found");
+        }
+      }
+    } catch (e) {
+      debugPrint("Somthing went wrong :${e.toString()}");
+      Get.snackbar("Error", "some thing went wrong: ${e.toString()}");
     }
   }
 }

@@ -14,4 +14,5 @@ abstract class AuthRepository {
   );
   Future<Map<String, dynamic>> forgotPassword(String email);
   Future<Map<String, dynamic>> resetPassword(String email, String new_password);
+  Future<Map<String, dynamic>> logout(String token);
 }
