@@ -79,7 +79,7 @@ class AuthRemoteDataSource {
     bool isPasswordReset,
   ) async {
     if (isPasswordReset) {
-      final url = Uri.parse(ApiConstants.resetPasswordEndpoint);
+      final url = Uri.parse(ApiConstants.resetPasswordotpEndpoint);
       final body = jsonEncode({'email': email.trim(), 'otp': otp.trim()});
       debugPrint("Paylod of the password reset : ${body.toString()}");
       try {
@@ -153,7 +153,30 @@ class AuthRemoteDataSource {
 
       return responseData;
     } catch (e) {
-      debugPrint("Error int eh remot: ${e.toString()}");
+      debugPrint("Error in the remot: ${e.toString()}");
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<Map<String, dynamic>> resetPassword(
+    String email,
+    String new_password,
+  ) async {
+    var url = Uri.parse(ApiConstants.resetPasswordEndpoint);
+    var body = jsonEncode({'email': email, 'new_password': new_password});
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+      debugPrint("response in the api: ${response.toString()}");
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      return responseData;
+    } catch (e) {
+      debugPrint("Error in the api: ${e.toString()}");
       throw Exception(e.toString());
     }
   }

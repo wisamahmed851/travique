@@ -8,23 +8,18 @@ import 'package:travique/routes/app_routes.dart';
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
 
-  const ResetPasswordScreen({
-    Key? key,
-    required this.email,
-  }) : super(key: key);
+  const ResetPasswordScreen({Key? key, required this.email}) : super(key: key);
 
   @override
-  State<ResetPasswordScreen> createState() =>_resetPasswordScreenState(); 
+  State<ResetPasswordScreen> createState() => _resetPasswordScreenState();
 }
 
-class _resetPasswordScreenState extends State<ResetPasswordScreen>{
+class _resetPasswordScreenState extends State<ResetPasswordScreen> {
   final AuthController controller = Get.find();
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final double scale = (size.height / 800).clamp(0.85, 1.1);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -66,7 +61,7 @@ class _resetPasswordScreenState extends State<ResetPasswordScreen>{
                 SizedBox(height: 28 * scale),
                 // ✉️ Email Field
                 TextField(
-                  controller: controller.emailController,
+                  controller: controller.resetPasswordNewPasswordController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'New password',
@@ -88,7 +83,6 @@ class _resetPasswordScreenState extends State<ResetPasswordScreen>{
                 ),
                 SizedBox(height: 16 * scale),
                 TextField(
-                  controller: controller.emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Confirm new password',
@@ -121,9 +115,9 @@ class _resetPasswordScreenState extends State<ResetPasswordScreen>{
                       ),
                       elevation: 0,
                     ),
-                    onPressed: () => Get.toNamed(
-                      Routes.MAIN_LAYOUT,
-                    ),
+                    onPressed: () {
+                      controller.resetPassword(widget.email);
+                    },
                     child: Text(
                       'Sent Code',
                       style: AppTextStyles.button.copyWith(

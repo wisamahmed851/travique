@@ -13,4 +13,5 @@ abstract class AuthRepository {
     bool isPasswordReset,
   );
   Future<Map<String, dynamic>> forgotPassword(String email);
+  Future<Map<String, dynamic>> resetPassword(String email, String new_password);
 }

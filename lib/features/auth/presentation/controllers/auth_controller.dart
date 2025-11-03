@@ -5,6 +5,7 @@ import 'package:travique/features/auth/domain/usecases/forgot_password_usecase.d
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/verification_usecase.dart';
 import 'package:travique/routes/app_routes.dart';
 
@@ -13,12 +14,14 @@ class AuthController extends GetxController {
   final RegisterUsecase registerUsecase;
   final VerificationUsecase verificationUsecase;
   final ForgotPasswordUseCase forgotPasswordUseCase;
+  final ResetPasswordUsecase resetPasswordUsecase;
   // final GoogleSignIn _googleSignIn = GoogleSignIn();
   AuthController(
     this.loginUsecase,
     this.registerUsecase,
     this.verificationUsecase,
     this.forgotPasswordUseCase,
+    this.resetPasswordUsecase,
   );
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -30,6 +33,8 @@ class AuthController extends GetxController {
   final verificationemailController = TextEditingController();
   final verificationotpController = TextEditingController();
   final forgotPasswordEmailController = TextEditingController();
+  final resetPasswordEmailController = TextEditingController();
+  final resetPasswordNewPasswordController = TextEditingController();
   var isLoading = false.obs;
   var isPasswordHidden = true.obs;
 
@@ -228,7 +233,7 @@ class AuthController extends GetxController {
 
   Future<void> passwordResetOtp(String otp) async {
     isLoading.value = true;
-    
+
     try {
       final result = await verificationUsecase(
         verificationemailController.text,
@@ -244,6 +249,35 @@ class AuthController extends GetxController {
       if (success) {
         Get.snackbar(success, message);
         Get.toNamed(Routes.RESET_PASSWORD, arguments: {'email': data['email']});
+      } else {
+        Get.snackbar(
+          'Error',
+          message.isNotEmpty ? message : "Otp Verification failed",
+        );
+      }
+    } catch (e) {
+      debugPrint("Error int he controller ${e.toString()}");
+      Get.snackbar("Error", "Error is : ${e.toString()}");
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    isLoading.value = true;
+
+    try {
+      final result = await resetPasswordUsecase(
+        email,
+        resetPasswordNewPasswordController.text,
+      );
+
+      debugPrint("Password Reset result: $result");
+      final success = result['success'] ?? false;
+      final message = result['message'];
+      final data = result['data'] ?? {};
+
+      if (success) {
+        Get.snackbar(success, message);
+        Get.toNamed(Routes.LOGIN);
       } else {
         Get.snackbar(
           'Error',

@@ -19,4 +19,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Map<String, dynamic>> forgotPassword(String email){
     return remoteDataSource.forgotPassword(email);
   }
+  Future<Map<String, dynamic>> resetPassword(String email, String new_password){
+    return remoteDataSource.resetPassword(email, new_password);
+  }
 }
