@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:travique/core/middlewares/auth_middleware.dart';
-import 'package:travique/features/auth/bindings/auth_binding.dart';
 import 'package:travique/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:travique/features/auth/presentation/pages/intro_screen.dart';
 import 'package:travique/features/auth/presentation/pages/new_password.dart';

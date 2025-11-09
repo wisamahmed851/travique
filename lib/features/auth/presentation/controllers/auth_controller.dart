@@ -276,7 +276,7 @@ class AuthController extends GetxController {
       debugPrint("Password Reset result: $result");
       final success = result['success'] ?? false;
       final message = result['message'];
-      final data = result['data'] ?? {};
+      // final data = result['data'] ?? {};
 
       if (success) {
         Get.snackbar('success', message);
@@ -305,7 +305,7 @@ class AuthController extends GetxController {
 
           final success = result['success'] ?? false;
           final message = result['message'];
-          final data = result['data'] ?? {};
+          // final data = result['data'] ?? {};
 
           if (success) {
             StorageService.clearToken();
