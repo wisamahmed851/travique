@@ -1,200 +1,487 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
-import 'package:travique/features/home/presentation/widgets/exclusive_package_card.dart';
-import 'package:travique/features/home/presentation/widgets/recommended_packages_section.dart';
 import 'package:travique/core/widgets/search_bar.dart';
 import 'package:travique/routes/app_routes.dart';
 
-class CityHomeScreen extends StatelessWidget {
-  final String cityName = "New York";
-  final String cityImage = "assets/images/newyork.jpeg";
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-  CityHomeScreen({Key? key}) : super(key: key);
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-  // ✅ Example sample data — replace later with API data
-  final List<Map<String, dynamic>> attractions = [
+class _HomeScreenState extends State<HomeScreen> {
+  // sample data (replace images with your own assets)
+  final List<Map<String, String>> cities = const [
     {
-      "title": "Central Park",
-      "subtitle": "Famous urban park",
-      "rating": 4.8,
+      "name": "Paris",
+      "image": "assets/images/paris.jpeg",
+      "description": "City of lights and love"
+    },
+    {
+      "name": "Tokyo",
+      "image": "assets/images/tokyo.jpeg",
+      "description": "Where tradition meets future"
+    },
+    {
+      "name": "Dubai",
+      "image": "assets/images/dubai.png",
+      "description": "Luxury and innovation"
+    },
+  ];
+
+  final List<Map<String, String>> experiences = const [
+    {"name": "Adventure", "icon": "assets/images/gallery1.png"},
+    {"name": "Culture", "icon": "assets/images/gallery2.png"},
+    {"name": "Relaxation", "icon": "assets/images/gallery3.png"},
+    {"name": "Nature", "icon": "assets/images/gallery4.png"},
+  ];
+
+  final List<Map<String, String>> featured = const [
+    {
+      "title": "Hidden Gems of Europe",
+      "subtitle": "Discover charming towns off the beaten path",
       "image": "assets/images/centralPark.jpg",
     },
     {
-      "title": "Times Square",
-      "subtitle": "Entertainment hub",
-      "rating": 4.7,
-      "image": "assets/images/timesSquare.jpg",
-    },
-    {
-      "title": "Statue of Liberty",
-      "subtitle": "Historic landmark",
-      "rating": 4.9,
-      "image": "assets/images/statueOfLiberty.jpg",
+      "title": "Top Beach Escapes",
+      "subtitle": "Sandy shores and blue horizons await",
+      "image": "assets/images/bali.jpeg",
     },
   ];
 
-  final List<Map<String, dynamic>> categories = [
-    {"name": "Attractions", "icon": "assets/images/mountain.png"},
-    {"name": "Food", "icon": "assets/images/Beach.png"},
-    {"name": "Events", "icon": "assets/images/History.png"},
-  ];
-
-  final List<Map<String, dynamic>> recommendations = [
+  // Promotion banners for the carousel
+  final List<Map<String, String>> promotions = const [
     {
-      "title": "Rooftop Dinner",
-      "subtitle": "Skyline view restaurant",
-      "rating": 4.6,
+      "title": "Spring Sale - 30% Off",
+      "subtitle": "Limited time offers for selected cities",
       "image": "assets/images/rooftopDinner.jpeg",
     },
     {
-      "title": "Broadway Show",
-      "subtitle": "Musical performance",
-      "rating": 4.8,
-      "image": "assets/images/broadwayShow.jpg",
+      "title": "Summer Beaches",
+      "subtitle": "Best beaches handpicked for you",
+      "image": "assets/images/bali.jpeg",
+    },
+    {
+      "title": "Weekend Getaways",
+      "subtitle": "Escape the city for a quick recharge",
+      "image": "assets/images/centralPark.jpg",
     },
   ];
 
+  late final PageController _promoController;
+  int _promoIndex = 0;
+  Timer? _promoTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _promoController = PageController(initialPage: 0, viewportFraction: 0.94);
+    // auto-advance every 4 seconds
+    _promoTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_promoController.hasClients && promotions.isNotEmpty) {
+        final next = (_promoIndex + 1) % promotions.length;
+        _promoController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 450),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _promoTimer?.cancel();
+    _promoController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final scale = (screenHeight / 800).clamp(0.85, 1.1);
+    // Replace the placeholder here with real username from your storage/service:
+    final String username = "User"; // e.g. StorageService.getUsername() or from your controller
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      // No built-in AppBar: we create appbar-like header inside body for a custom look
       body: SafeArea(
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
-            // 🏙️ City Banner
-            _buildCityHeader(context, scale),
+            // Header + Search
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Column(
+                children: [
+                  _buildHeader(username),
+                  const SizedBox(height: 12),
+                  SearchBarWidget(searchtext: "Search destinations..."),
+                ],
+              ),
+            ),
+
+            // Promotion carousel
+            const SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
-                  SearchBarWidget(searchtext: "Search in $cityName"),
-                  const SizedBox(height: 25),
-                  _buildSectionTitle("Top Attractions in $cityName"),
+                  _buildSectionTitle("Promotions"),
+                  const SizedBox(height: 12),
+                  _buildPromotionCarousel(),
+                ],
+              ),
+            ),
+
+            // Rest of page content
+            const SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle("Popular Cities"),
                   const SizedBox(height: 10),
-                  _buildAttractionSection(context),
+                  _buildCityCards(),
                   const SizedBox(height: 25),
-                  _buildSectionTitle("Explore $cityName"),
+                  _buildSectionTitle("Top Experiences"),
                   const SizedBox(height: 10),
-                  _buildCategorySection(context),
+                  _buildExperienceGrid(),
                   const SizedBox(height: 25),
-                  RecommendedPackagesSection(country: 'New York'),
+                  _buildSectionTitle("Featured Destinations"),
+                  const SizedBox(height: 10),
+                  _buildFeaturedSlider(),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
           ],
         ),
       ),
+      // Optional: add your bottom navigation in Scaffold.bottomNavigationBar if you want
     );
   }
 
-  // 🏙️ City Header with background image
-  Widget _buildCityHeader(BuildContext context, double scale) {
-    return Stack(
+  Widget _buildHeader(String username) {
+    return Row(
       children: [
-        Container(
-          height: 180 * scale,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(cityImage),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        Container(height: 180 * scale, color: Colors.black.withOpacity(0.3)),
-        Positioned(
-          left: 20,
-          bottom: 25,
+        // greet + subtitle
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Explore $cityName",
-                style: AppTextStyles.heading.copyWith(
-                  fontSize: 26 * scale,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                "Hello,",
+                style: AppTextStyles.body.copyWith(
+                  fontSize: 14,
+                  color: AppColors.textDark.withOpacity(0.7),
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
-                "Discover top attractions & experiences",
-                style: AppTextStyles.body.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+                username,
+                style: AppTextStyles.heading.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
                 ),
               ),
             ],
           ),
         ),
+
+        // small avatar / action icons
+        Row(
+          children: [
+            // notification icon
+            GestureDetector(
+              onTap: () {
+                // navigate to notifications or your inbox
+                Get.toNamed(Routes.CITY_DETAIL); // replace as needed
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(0, 3)),
+                  ],
+                ),
+                child: const Icon(Icons.notifications_none, size: 20),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // avatar
+            GestureDetector(
+              onTap: () {
+                // open profile
+              },
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.primary.withOpacity(0.12),
+                child: Text(
+                  // initials fallback
+                  (username.isNotEmpty ? username[0].toUpperCase() : "U"),
+                  style: AppTextStyles.heading.copyWith(color: AppColors.primary),
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  // 🌆 Attractions List
-  Widget _buildAttractionSection(BuildContext context) {
-    // final screenHeight = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: /* screenHeight * 0.33 */ 270,
-      child: attractions.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: attractions.length,
-              clipBehavior: Clip.none,
-              itemBuilder: (context, index) {
-                final item = attractions[index];
-                return GestureDetector(
-                  onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
-                  child: ExclusivePackageCard(
-                    city: item['subtitle'],
-                    image: item['image'],
-                    country: item['title'],
-                    rating: item['rating'],
+  Widget _buildPromotionCarousel() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 150,
+          child: PageView.builder(
+            controller: _promoController,
+            itemCount: promotions.length,
+            onPageChanged: (index) {
+              setState(() => _promoIndex = index);
+            },
+            itemBuilder: (context, index) {
+              final item = promotions[index];
+              return GestureDetector(
+                onTap: () {
+                  // handle promotion tap
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    image: DecorationImage(
+                      image: AssetImage(item['image']!),
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(2, 4)),
+                    ],
                   ),
-                );
-              },
-            ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [Colors.black.withOpacity(0.45), Colors.transparent],
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    alignment: Alignment.bottomLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item['title']!,
+                          style: AppTextStyles.heading.copyWith(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          item['subtitle']!,
+                          style: AppTextStyles.body.copyWith(
+                            color: Colors.white.withOpacity(0.95),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        // dots indicators
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(promotions.length, (i) {
+            final active = i == _promoIndex;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: active ? 18 : 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: active ? AppColors.primary : AppColors.borderLightGrey,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 
-  // 🗺️ Category Section
-  Widget _buildCategorySection(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+  // --- rest of your existing builders (kept mostly same) ---
+
+  Widget _buildCityCards() {
     return SizedBox(
-      height: 120,
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
+        itemCount: cities.length,
         itemBuilder: (context, index) {
-          final item = categories[index];
-          return Container(
-            width: screenWidth * 0.27,
-            margin: const EdgeInsets.only(right: 15),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.borderLightGrey, width: 2),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(item['icon'], height: 40, width: 40),
-                const SizedBox(height: 6),
-                Text(
-                  item['name'],
-                  style: AppTextStyles.body.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textDark,
+          final city = cities[index];
+          return GestureDetector(
+            onTap: () => Get.toNamed(Routes.CITY_DETAIL, arguments: city["name"]),
+            child: Container(
+              width: 160,
+              margin: EdgeInsets.only(right: index == cities.length - 1 ? 0 : 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                image: DecorationImage(
+                  image: AssetImage(city["image"]!),
+                  fit: BoxFit.cover,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: const Offset(2, 4),
+                  ),
+                ],
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.black.withOpacity(0.5), Colors.transparent],
                   ),
                 ),
+                padding: const EdgeInsets.all(12),
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  city["name"]!,
+                  style: AppTextStyles.heading.copyWith(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildExperienceGrid() {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3.2,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 12,
+      ),
+      itemCount: experiences.length,
+      itemBuilder: (context, index) {
+        final exp = experiences[index];
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.borderLightGrey, width: 1.5),
+            borderRadius: BorderRadius.circular(14),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(exp['icon']!, height: 30),
+              const SizedBox(width: 10),
+              Text(
+                exp['name']!,
+                style: AppTextStyles.body.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textDark,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFeaturedSlider() {
+    return SizedBox(
+      height: 220,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: featured.length,
+        itemBuilder: (context, index) {
+          final item = featured[index];
+          return Container(
+            width: 280,
+            margin: EdgeInsets.only(right: index == featured.length - 1 ? 0 : 15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              image: DecorationImage(
+                image: AssetImage(item["image"]!),
+                fit: BoxFit.cover,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: const Offset(2, 4),
+                ),
               ],
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                ),
+              ),
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.bottomLeft,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item['title']!,
+                    style: AppTextStyles.heading.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item['subtitle']!,
+                    style: AppTextStyles.body.copyWith(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -206,7 +493,7 @@ class CityHomeScreen extends StatelessWidget {
     return Text(
       title,
       style: AppTextStyles.heading.copyWith(
-        fontSize: 16,
+        fontSize: 18,
         color: AppColors.black,
       ),
     );

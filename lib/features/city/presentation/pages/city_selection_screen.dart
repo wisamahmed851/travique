@@ -117,7 +117,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                   ),
                   onPressed: () {
                     if (selectedCityIndex != null) {
-                      Get.toNamed(Routes.MAIN_LAYOUT);
+                      Get.toNamed(Routes.CITY_DETAIL);
                     } else {
                       Get.snackbar(
                         "Select a City",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
 import 'package:travique/features/favorite_places/presentation/pages/favorite_places_screen.dart';
 import 'package:travique/features/home/presentation/pages/home_screen.dart';
 import 'package:travique/features/layout/presentation/controllers/layout_controller.dart';
@@ -14,9 +15,9 @@ class MainLayout extends StatelessWidget {
     final controller = Get.put(LayoutController());
 
     final List<Widget> pages = [
-      CityHomeScreen(),
+      HomeScreen(),
       FavoritePlacesScreen(),
-      Placeholder(),
+      CitySelectionScreen(),
       ProfileScreen(),
     ];
     return Obx(() {

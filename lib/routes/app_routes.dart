@@ -8,6 +8,7 @@ abstract class Routes {
   static const String RESET_PASSWORD = '/reset_password';
   static const String OTP_VERIFICATION = '/otp_verification';
   static const String CITY_SELECTION = '/city_selection';
+  static const String CITY_DETAIL = '/city_detail';
   static const String MAIN_LAYOUT = '/main_layout';
   static const String HOME = '/home';
   static const String HOME2 = '/home2';

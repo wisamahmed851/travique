@@ -7,6 +7,7 @@ import 'package:travique/features/auth/presentation/pages/new_password.dart';
 import 'package:travique/features/auth/presentation/pages/otp_verifcation.dart';
 import 'package:travique/features/auth/presentation/pages/reset_password_screen.dart';
 import 'package:travique/features/city/bindings/city_binding.dart';
+import 'package:travique/features/city/presentation/pages/city_details_screen.dart';
 import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
 import 'package:travique/features/favorite_places/bindings/favorite_places_binding.dart';
 import 'package:travique/features/favorite_places/presentation/pages/favorite_places_screen.dart';
@@ -71,6 +72,11 @@ class AppPages {
       binding: CityBinding(),
     ),
     GetPage(
+      name: Routes.CITY_DETAIL,
+      page: () => CityDetailsScreen(),
+      binding: CityBinding(),
+    ),
+    GetPage(
       name: Routes.MAIN_LAYOUT,
       page: () => const MainLayout(),
       bindings: [
@@ -82,7 +88,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.HOME,
-      page: () => CityHomeScreen(),
+      page: () => HomeScreen(),
       binding: HomeBinding(),
     ),
     GetPage(

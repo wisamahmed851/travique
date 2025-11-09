@@ -195,16 +195,16 @@ class PlaceDetailScreen extends StatelessWidget {
                       color: AppColors.textDark,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      'assets/images/map_sample.png',
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  // const SizedBox(height: 10),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.circular(16),
+                  //   child: Image.asset(
+                  //     'assets/images/map_sample.png',
+                  //     height: 180,
+                  //     width: double.infinity,
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // ),
                   const SizedBox(height: 24),
 
                   // --- Social Share ---
