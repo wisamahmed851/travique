@@ -63,6 +63,15 @@ class AuthController extends GetxController {
       if (success) {
         if (data['access_token'] != null) {
           await StorageService.saveToken(data['access_token']);
+          if (data['user'] != null) {
+            final user = data['user'];
+            await StorageService.saveUserInfo(
+              user['id'],
+              user['name'],
+              user['email'],
+              user['image'],
+            );
+          }
           Get.snackbar("Success", "Login Successful");
           Get.offAllNamed(Routes.MAIN_LAYOUT);
         } else if (message.contains("Account not verified")) {

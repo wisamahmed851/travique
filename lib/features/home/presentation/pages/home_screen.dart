@@ -1,10 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travique/core/constants/api_constants.dart';
+import 'package:travique/core/service/storage_service.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/core/widgets/search_bar.dart';
+import 'package:travique/features/home/presentation/controllers/home_controller.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,31 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // sample data (replace images with your own assets)
-  final List<Map<String, String>> cities = const [
-    {
-      "name": "Paris",
-      "image": "assets/images/paris.jpeg",
-      "description": "City of lights and love"
-    },
-    {
-      "name": "Tokyo",
-      "image": "assets/images/tokyo.jpeg",
-      "description": "Where tradition meets future"
-    },
-    {
-      "name": "Dubai",
-      "image": "assets/images/dubai.png",
-      "description": "Luxury and innovation"
-    },
-  ];
-
-  final List<Map<String, String>> experiences = const [
-    {"name": "Adventure", "icon": "assets/images/gallery1.png"},
-    {"name": "Culture", "icon": "assets/images/gallery2.png"},
-    {"name": "Relaxation", "icon": "assets/images/gallery3.png"},
-    {"name": "Nature", "icon": "assets/images/gallery4.png"},
-  ];
+  final controller = Get.find<HomeController>();
 
   final List<Map<String, String>> featured = const [
     {
@@ -104,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // Replace the placeholder here with real username from your storage/service:
-    final String username = "User"; // e.g. StorageService.getUsername() or from your controller
+    final String username = StorageService.getUserName() ?? 'Jhon';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -169,6 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader(String username) {
+    final String? userimage = StorageService.getUserImage();
+    final String? imageUrl = (userimage != null && userimage.isNotEmpty)
+        ? '${ApiConstants.imageUrl}/$userimage'
+        : null;
     return Row(
       children: [
         // greet + subtitle
@@ -199,38 +181,22 @@ class _HomeScreenState extends State<HomeScreen> {
         // small avatar / action icons
         Row(
           children: [
-            // notification icon
             GestureDetector(
-              onTap: () {
-                // navigate to notifications or your inbox
-                Get.toNamed(Routes.CITY_DETAIL); // replace as needed
-              },
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(0, 3)),
-                  ],
-                ),
-                child: const Icon(Icons.notifications_none, size: 20),
-              ),
-            ),
-            const SizedBox(width: 12),
-            // avatar
-            GestureDetector(
-              onTap: () {
-                // open profile
-              },
+              onTap: () {},
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: AppColors.primary.withOpacity(0.12),
-                child: Text(
-                  // initials fallback
-                  (username.isNotEmpty ? username[0].toUpperCase() : "U"),
-                  style: AppTextStyles.heading.copyWith(color: AppColors.primary),
-                ),
+                backgroundImage: (imageUrl != null)
+                    ? NetworkImage(imageUrl)
+                    : null,
+                child: (imageUrl == null)
+                    ? Text(
+                        (username.isNotEmpty ? username[0].toUpperCase() : "U"),
+                        style: AppTextStyles.heading.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      )
+                    : null,
               ),
             ),
           ],
@@ -265,7 +231,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(2, 4)),
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6,
+                        offset: const Offset(2, 4),
+                      ),
                     ],
                   ),
                   child: Container(
@@ -274,7 +244,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
-                        colors: [Colors.black.withOpacity(0.45), Colors.transparent],
+                        colors: [
+                          Colors.black.withOpacity(0.45),
+                          Colors.transparent,
+                        ],
                       ),
                     ),
                     padding: const EdgeInsets.all(12),
@@ -330,98 +303,124 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // --- rest of your existing builders (kept mostly same) ---
-
   Widget _buildCityCards() {
-    return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: cities.length,
-        itemBuilder: (context, index) {
-          final city = cities[index];
-          return GestureDetector(
-            onTap: () => Get.toNamed(Routes.CITY_DETAIL, arguments: city["name"]),
-            child: Container(
-              width: 160,
-              margin: EdgeInsets.only(right: index == cities.length - 1 ? 0 : 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: AssetImage(city["image"]!),
-                  fit: BoxFit.cover,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: const Offset(2, 4),
-                  ),
-                ],
-              ),
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      final cityList = controller.cities;
+      if (cityList.isEmpty) {
+        return const Center(child: Text("No Popular cities found"));
+      }
+      return SizedBox(
+        height: 200,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: cityList.length,
+          itemBuilder: (context, index) {
+            final city = cityList[index];
+            return GestureDetector(
+              onTap: () =>
+                  Get.toNamed(Routes.CITY_DETAIL, arguments: city.name),
               child: Container(
+                width: 160,
+                margin: EdgeInsets.only(
+                  right: index == cityList.length - 1 ? 0 : 15,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Colors.black.withOpacity(0.5), Colors.transparent],
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      '${ApiConstants.imageUrl}/${city.image}',
+                    ),
+                    fit: BoxFit.cover,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: const Offset(2, 4),
+                    ),
+                  ],
                 ),
-                padding: const EdgeInsets.all(12),
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  city["name"]!,
-                  style: AppTextStyles.heading.copyWith(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.5),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    city.name,
+                    style: AppTextStyles.heading.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildExperienceGrid() {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3.2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 12,
-      ),
-      itemCount: experiences.length,
-      itemBuilder: (context, index) {
-        final exp = experiences[index];
-        return Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.borderLightGrey, width: 1.5),
-            borderRadius: BorderRadius.circular(14),
-            color: Colors.white,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(exp['icon']!, height: 30),
-              const SizedBox(width: 10),
-              Text(
-                exp['name']!,
-                style: AppTextStyles.body.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textDark,
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (controller.experiences.isEmpty) {
+        return const Center(child: Text('Now Experince found'));
+      }
+      return GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 3.2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 12,
+        ),
+        itemCount: controller.experiences.length,
+        itemBuilder: (context, index) {
+          final exp = controller.experiences[index];
+          return Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.borderLightGrey, width: 1.5),
+              borderRadius: BorderRadius.circular(14),
+              color: Colors.white,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.network(
+                  '${ApiConstants.imageUrl}/${exp.image}',
+                  height: 30,
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                const SizedBox(width: 10),
+                Text(
+                  exp.name,
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textDark,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 
   Widget _buildFeaturedSlider() {
@@ -434,7 +433,9 @@ class _HomeScreenState extends State<HomeScreen> {
           final item = featured[index];
           return Container(
             width: 280,
-            margin: EdgeInsets.only(right: index == featured.length - 1 ? 0 : 15),
+            margin: EdgeInsets.only(
+              right: index == featured.length - 1 ? 0 : 15,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
               image: DecorationImage(
