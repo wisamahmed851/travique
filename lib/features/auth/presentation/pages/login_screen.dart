@@ -126,31 +126,41 @@ class LoginScreen extends StatelessWidget {
                 //     onPressed: (){}, // 👈 calls the controller method
                 //   ),
                 // ),
-                
+
                 // SizedBox(height: 22 * scale),
 
                 // 🔵 Sign In Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 52 * scale,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                Obx(() {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 52 * scale,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 0,
                       ),
-                      elevation: 0,
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : controller.login,
+                      child: controller.isLoading.value
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            )
+                          : Text(
+                              'Sign in',
+                              style: AppTextStyles.button.copyWith(
+                                color: Colors.white,
+                                fontSize: 18 * scale,
+                              ),
+                            ),
                     ),
-                    onPressed: controller.login,
-                    child: Text(
-                      'Sign in',
-                      style: AppTextStyles.button.copyWith(
-                        color: Colors.white,
-                        fontSize: 18 * scale,
-                      ),
-                    ),
-                  ),
-                ),
+                  );
+                }),
+
                 SizedBox(height: 22 * scale),
 
                 // 🔗 Forgot Password

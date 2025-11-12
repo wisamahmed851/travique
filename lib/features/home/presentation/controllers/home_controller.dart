@@ -23,6 +23,7 @@ class HomeController extends GetxController {
     isLoading.value = true;
     try {
       final result = await homeRepository.getHomeData();
+      debugPrint("home page api response ${result.toString()}");
       final success = result['success'];
       final message = result['message'];
       final data = result['data'];

@@ -12,4 +12,5 @@ class ApiConstants {
 
   //public 
   static final String popularCities = '$baseUrl/city/home';
+  static final String cityDetail = '$baseUrl/city/show';
 }

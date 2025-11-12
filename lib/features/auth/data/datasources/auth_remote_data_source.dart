@@ -12,7 +12,7 @@ class AuthRemoteDataSource {
       'email': email.trim(),
       'password': password.trim(),
     });
-
+    
     try {
       final response = await http.post(
         url,
