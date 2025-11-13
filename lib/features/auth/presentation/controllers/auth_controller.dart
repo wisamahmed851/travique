@@ -1,20 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/service/storage_service.dart';
+import 'package:travique/features/auth/domain/usecases/forgot_password_usecase.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travique/features/auth/domain/usecases/login_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:travique/features/auth/domain/usecases/register_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:travique/features/auth/domain/usecases/verification_usecase.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final LoginUsecase loginUsecase;
   final RegisterUsecase registerUsecase;
+  final VerificationUsecase verificationUsecase;
+  final ForgotPasswordUseCase forgotPasswordUseCase;
+  final ResetPasswordUsecase resetPasswordUsecase;
+  final LogoutUsecase logoutUsecase;
   // final GoogleSignIn _googleSignIn = GoogleSignIn();
-  AuthController(this.loginUsecase, this.registerUsecase);
+  AuthController(
+    this.loginUsecase,
+    this.registerUsecase,
+    this.verificationUsecase,
+    this.forgotPasswordUseCase,
+    this.resetPasswordUsecase,
+    this.logoutUsecase,
+  );
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final otpController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final loginemailController = TextEditingController();
+  final loginpasswordController = TextEditingController();
+  final verificationemailController = TextEditingController();
+  final verificationotpController = TextEditingController();
+  final forgotPasswordEmailController = TextEditingController();
+  final resetPasswordEmailController = TextEditingController();
+  final resetPasswordNewPasswordController = TextEditingController();
   var isLoading = false.obs;
   var isPasswordHidden = true.obs;
 
@@ -23,26 +46,48 @@ class AuthController extends GetxController {
   }
 
   Future<void> login() async {
-    // isLoading.value = true;
-    // await Future.delayed(Duration(seconds: 2));
-    // isLoading.value = false;
-    // Get.snackbar("Success", "Login Successful");
-    // Get.offAllNamed(Routes.CITY_SELECTION);
+    isLoading.value = true;
+
     try {
       final response = await loginUsecase(
-        emailController.text,
-        passwordController.text,
+        loginemailController.text,
+        loginpasswordController.text,
       );
-      print(response);
-      if (response['data']['access_token'] != null) {
-        await StorageService.saveToken(response['data']['access_token']);
-        Get.snackbar("Success", "Login Successful");
-        Get.offAllNamed(Routes.MAIN_LAYOUT);
+
+      debugPrint("Login response: $response");
+
+      final bool success = response['success'] ?? false;
+      final String message = response['message'] ?? '';
+      final data = response['data'] ?? {};
+
+      if (success) {
+        if (data['access_token'] != null) {
+          await StorageService.saveToken(data['access_token']);
+          if (data['user'] != null) {
+            final user = data['user'];
+            await StorageService.saveUserInfo(
+              user['id'],
+              user['name'],
+              user['email'],
+              user['image'],
+            );
+          }
+          Get.snackbar("Success", "Login Successful");
+          Get.offAllNamed(Routes.MAIN_LAYOUT);
+        } else if (message.contains("Account not verified")) {
+          Get.snackbar("Info", message);
+          var email = data['email'] ?? loginemailController.text;
+          debugPrint("email thats going to the otp: $email");
+          Get.offAllNamed(
+            Routes.OTP_VERIFICATION,
+            arguments: {'isPasswordReset': false, 'email': email},
+          );
+        }
       } else {
-        Get.snackbar("Error", "Invalid Credentials");
+        Get.snackbar("Error", message.isNotEmpty ? message : "Login failed");
       }
     } catch (e) {
-      print("Error during login: ${e.toString()}");
+      debugPrint("Error during login: ${e.toString()}");
       Get.snackbar("Login Failed", e.toString());
     } finally {
       isLoading.value = false;
@@ -83,6 +128,7 @@ class AuthController extends GetxController {
 
   Future<void> register() async {
     isLoading.value = true;
+
     try {
       final response = await registerUsecase(
         nameController.text,
@@ -90,20 +136,201 @@ class AuthController extends GetxController {
         passwordController.text,
         confirmPasswordController.text,
       );
-      print(response);
-      if (response['success'] = true) {
-        Get.snackbar('success', response['message']);
+
+      debugPrint("Register response: $response");
+
+      final bool success = response['success'] ?? false;
+      final String message = response['message'] ?? '';
+      // final data = response['data'] ?? {};
+
+      if (success) {
+        // ✅ Registration successful → Go to OTP verification
+        Get.snackbar(
+          "Success",
+          message.isNotEmpty
+              ? message
+              : "Registration successful. Please verify your email.",
+        );
+        Get.toNamed(
+          Routes.OTP_VERIFICATION,
+          arguments: {'isPasswordReset': true, 'email': emailController.text},
+        );
+      } else {
+        // ❌ Validation or other backend error
+        Get.snackbar(
+          "Error",
+          message.isNotEmpty ? message : "Registration failed",
+        );
       }
-      if (response['success'] == false) {
-        Get.snackbar("Error", response['message']);
-      }
-      // return null;
     } catch (e) {
-      print("Error: ${e.toString()}");
+      debugPrint("Error during register: ${e.toString()}");
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
+  Future<void> otpVerification(String otp) async {
+    isLoading.value = true;
+
+    try {
+      final result = await verificationUsecase(
+        verificationemailController.text,
+        otp,
+        false,
+      );
+      debugPrint("🔍 OTP Verification Result: $result");
+
+      final bool success = result['success'] ?? false;
+      final String message = result['message'] ?? '';
+      final data = result['data'] ?? {};
+
+      if (success) {
+        // final user = data['user'];
+        final token = data['access_token'];
+
+        // ✅ Save the token for authenticated API calls
+        await StorageService.saveToken(token);
+
+        // (Optional) save user info if needed
+        // await StorageService.saveUser(user);
+
+        Get.snackbar(
+          "Success",
+          message.isNotEmpty ? message : "Account verified successfully",
+        );
+        Get.offAllNamed(Routes.MAIN_LAYOUT); // replace navigation stack
+      } else {
+        Get.snackbar(
+          "Error",
+          message.isNotEmpty ? message : "OTP verification failed",
+        );
+      }
+    } catch (e) {
+      debugPrint("❌ Error during OTP verification: ${e.toString()}");
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> forgotPassword() async {
+    isLoading.value = true;
+    try {
+      final result = await forgotPasswordUseCase(
+        forgotPasswordEmailController.text,
+      );
+
+      debugPrint("result of the forgot password api $result");
+
+      final success = result['success'] ?? false;
+      final message = result['message'];
+      final data = result['data'] ?? {};
+
+      if (success) {
+        if (data != null) {
+          Get.toNamed(
+            Routes.OTP_VERIFICATION,
+            arguments: {'isPasswordReset': true, 'email': data['email']},
+          );
+        }
+      } else {
+        Get.snackbar("Error", message);
+      }
+    } catch (e) {
+      debugPrint("Erro in the api: ${e.toString()}");
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
+  Future<void> passwordResetOtp(String otp) async {
+    isLoading.value = true;
+
+    try {
+      final result = await verificationUsecase(
+        verificationemailController.text,
+        otp,
+        true,
+      );
+
+      debugPrint("Password Reset result: $result");
+      final success = result['success'] ?? false;
+      final message = result['message'];
+      final data = result['data'] ?? {};
+
+      if (success) {
+        Get.snackbar('success', message);
+        Get.toNamed(Routes.RESET_PASSWORD, arguments: {'email': data['email']});
+      } else {
+        Get.snackbar(
+          'Error',
+          message.isNotEmpty ? message : "Otp Verification failed",
+        );
+      }
+    } catch (e) {
+      debugPrint("Error int he controller ${e.toString()}");
+      Get.snackbar("Error", "Error is : ${e.toString()}");
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    isLoading.value = true;
+
+    try {
+      final result = await resetPasswordUsecase(
+        email,
+        resetPasswordNewPasswordController.text,
+      );
+
+      debugPrint("Password Reset result: $result");
+      final success = result['success'] ?? false;
+      final message = result['message'];
+      // final data = result['data'] ?? {};
+
+      if (success) {
+        Get.snackbar('success', message);
+        Get.toNamed(Routes.LOGIN);
+      } else {
+        Get.snackbar(
+          'Error',
+          message.isNotEmpty ? message : "Otp Verification failed",
+        );
+      }
+    } catch (e) {
+      debugPrint("Error int he controller ${e.toString()}");
+      Get.snackbar("Error", "Error is : ${e.toString()}");
+    }
+  }
+
+  Future<void> logut() async {
+    isLoading.value = true;
+
+    try {
+      final isLoggedin = StorageService.isLoggedIn();
+      if (isLoggedin) {
+        final token = StorageService.getToken();
+        if (token != null && token.isNotEmpty) {
+          final result = await logoutUsecase(token);
+
+          final success = result['success'] ?? false;
+          final message = result['message'];
+          // final data = result['data'] ?? {};
+
+          if (success) {
+            StorageService.clearToken();
+            Get.snackbar("success", message);
+            Get.offAllNamed(Routes.LOGIN);
+          } else {
+            Get.snackbar('error', message);
+          }
+        } else {
+          debugPrint("No token available to perform logout");
+          Get.snackbar("Error", "No valid session token found");
+        }
+      }
+    } catch (e) {
+      debugPrint("Somthing went wrong :${e.toString()}");
+      Get.snackbar("Error", "some thing went wrong: ${e.toString()}");
+    }
+  }
 }

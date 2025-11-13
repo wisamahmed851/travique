@@ -13,4 +13,16 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Map<String, dynamic>> register(String name, String email, String password, String confirmPassword){
     return remoteDataSource.register(name, email, password, confirmPassword);
   }
+  Future<Map<String, dynamic>> otpVerification(String email, String otp, bool isPasswordReset){
+    return remoteDataSource.otpVerification(email, otp, isPasswordReset);
+  }
+  Future<Map<String, dynamic>> forgotPassword(String email){
+    return remoteDataSource.forgotPassword(email);
+  }
+  Future<Map<String, dynamic>> resetPassword(String email, String new_password){
+    return remoteDataSource.resetPassword(email, new_password);
+  }
+  Future<Map<String, dynamic>> logout(String token){
+    return remoteDataSource.logout(token);
+  }
 }

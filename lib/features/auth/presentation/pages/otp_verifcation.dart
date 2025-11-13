@@ -3,14 +3,16 @@ import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:travique/routes/app_routes.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
-  final bool
-  isPasswordReset; // true = for forgot password, false = for email verification
+  final bool isPasswordReset;
+  final String email; 
 
-  const OtpVerificationScreen({Key? key, required this.isPasswordReset})
-    : super(key: key);
+  const OtpVerificationScreen({
+    super.key,
+    required this.isPasswordReset,
+    required this.email,
+  });
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -21,6 +23,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final int otpLength = 6;
   late List<TextEditingController> otpControllers;
   late List<FocusNode> focusNodes;
+
+  bool _isVerifying = false;
 
   @override
   void initState() {
@@ -48,25 +52,26 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   //   }
   // }
 
-  void _submitOtp() {
+  void _submitOtp() async {
+    if (_isVerifying) return;
+
     String otp = otpControllers.map((e) => e.text).join();
     if (otp.length < otpLength) {
       Get.snackbar("Error", "Please enter the complete OTP");
       return;
-    } else {
-      Get.snackbar("Success", "OTP Verified Successfully");
-      if (widget.isPasswordReset) {
-        Get.toNamed(Routes.NEW_PASSWORD);
-      } else {
-        Get.toNamed(Routes.CITY_SELECTION);
-      }
     }
+    _isVerifying = true;
+    controller.verificationemailController.text = widget.email;
 
-    // if (widget.isPasswordReset) {
-    //   controller.verifyPasswordResetOtp(otp);
-    // } else {
-    //   controller.verifyEmailOtp(otp);
-    // }
+    try {
+      if (widget.isPasswordReset) {
+        await controller.passwordResetOtp(otp);
+      } else {
+        await controller.otpVerification(otp);
+      }
+    } finally {
+      _isVerifying = false;
+    }
   }
 
   @override

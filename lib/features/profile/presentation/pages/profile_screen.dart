@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
+import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:travique/routes/app_routes.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -9,6 +10,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController controller = Get.find();
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       body: SafeArea(
@@ -109,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
               profileItem(
                 Icons.logout_rounded,
                 'Logout',
-                () => Get.toNamed(Routes.PROFILE_VIEW),
+                () => controller.logut(),
                 iconColor: AppColors.primary,
               ),
             ],

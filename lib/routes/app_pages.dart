@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:travique/core/middlewares/auth_middleware.dart';
-import 'package:travique/features/auth/bindings/auth_binding.dart';
-import 'package:travique/features/auth/presentation/pages/forget_password.dart';
+import 'package:travique/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:travique/features/auth/presentation/pages/intro_screen.dart';
 import 'package:travique/features/auth/presentation/pages/new_password.dart';
 import 'package:travique/features/auth/presentation/pages/otp_verifcation.dart';
+import 'package:travique/features/auth/presentation/pages/reset_password_screen.dart';
 import 'package:travique/features/city/bindings/city_binding.dart';
+import 'package:travique/features/city/presentation/pages/city_details_screen.dart';
 import 'package:travique/features/city/presentation/pages/city_selection_screen.dart';
 import 'package:travique/features/favorite_places/bindings/favorite_places_binding.dart';
 import 'package:travique/features/favorite_places/presentation/pages/favorite_places_screen.dart';
@@ -20,6 +20,7 @@ import 'package:travique/features/auth/presentation/pages/login_screen.dart';
 import 'package:travique/features/auth/presentation/pages/register_screen.dart';
 import 'package:travique/features/home/bindings/home_binding.dart';
 import 'package:travique/features/home/presentation/pages/home_screen.dart';
+import 'package:travique/features/home/presentation/pages/home2_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -42,20 +43,38 @@ class AppPages {
       page: () {
         final args = Get.arguments as Map<String, dynamic>?;
         final bool isPasswordReset = args?['isPasswordReset'] ?? false;
-        return OtpVerificationScreen(isPasswordReset: isPasswordReset);
+        final String email = args?['email'] ?? '';
+        return OtpVerificationScreen(isPasswordReset: isPasswordReset, email: email,);
       },
     ),
     GetPage(
       name: Routes.FORGOT_PASSWORD,
-      page: () => ForgetPassword(),
+      page: () => ForgetPasswordScreen(),
     ),
     GetPage(
       name: Routes.NEW_PASSWORD,
       page: () => NewPassword(),
     ),
     GetPage(
+      name: Routes.RESET_PASSWORD,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>?;
+        final String email = args?['email'] ?? '';
+        return ResetPasswordScreen(email: email);
+      },
+
+    ),
+    GetPage(
       name: Routes.CITY_SELECTION,
       page: () => CitySelectionScreen(),
+      binding: CityBinding(),
+    ),
+    GetPage(
+      name: Routes.CITY_DETAIL,
+      page: () {
+        final int id = Get.arguments as int;
+        return CityDetailsScreen(id: id);
+      },
       binding: CityBinding(),
     ),
     GetPage(
@@ -66,11 +85,16 @@ class AppPages {
         FavoritePlacesBinding(),
         ProfileBinding(),
       ],
-      middlewares: [AuthMiddleware()],
+      // middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: Routes.HOME,
-      page: () => CityHomeScreen(),
+      page: () => HomeScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: Routes.HOME2,
+      page: () => Home2Screen(),
       binding: HomeBinding(),
     ),
     GetPage(

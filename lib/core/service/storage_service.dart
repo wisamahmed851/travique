@@ -23,4 +23,21 @@ class StorageService {
   static bool isLoggedIn() {
     return _perfs.getString("token") != null;
   }
+
+  static Future<void> saveUserInfo(
+    int id,
+    String name,
+    String email,
+    String image,
+  ) async {
+    await _perfs.setInt('user_id', id);
+    await _perfs.setString('user_name', name);
+    await _perfs.setString('user_email', email);
+    await _perfs.setString('user_image', image);
+  }
+
+  static int? getUserId() => _perfs.getInt('user_id');
+  static String? getUserName() => _perfs.getString('user_name');
+  static String? getUserEmail() => _perfs.getString('user_email');
+  static String? getUserImage() => _perfs.getString('user_image');
 }

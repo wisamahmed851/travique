@@ -3,16 +3,22 @@ import 'package:get/get.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
 import 'package:travique/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:travique/routes/app_routes.dart';
 
-class ForgetPassword extends StatelessWidget {
+class ResetPasswordScreen extends StatefulWidget {
+  final String email;
+
+  const ResetPasswordScreen({Key? key, required this.email}) : super(key: key);
+
+  @override
+  State<ResetPasswordScreen> createState() => _resetPasswordScreenState();
+}
+
+class _resetPasswordScreenState extends State<ResetPasswordScreen> {
   final AuthController controller = Get.find();
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final double scale = (size.height / 800).clamp(0.85, 1.1);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -42,7 +48,7 @@ class ForgetPassword extends StatelessWidget {
                 // 🏷️ Title
                 Center(
                   child: Text(
-                    'Reset Passwrod',
+                    'New Password',
                     textAlign: TextAlign.center,
                     style: AppTextStyles.heading.copyWith(
                       fontWeight: FontWeight.bold,
@@ -51,28 +57,34 @@ class ForgetPassword extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 22 * scale),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30 * scale),
-                    child: Text(
-                      'Enter the email address associated with your account',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.body.copyWith(
-                        fontSize: 18 * scale,
-                        color: AppColors.textDarkGrey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
                 SizedBox(height: 28 * scale),
                 // ✉️ Email Field
                 TextField(
-                  controller: controller.emailController,
+                  controller: controller.resetPasswordNewPasswordController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    hintText: 'Your email',
+                    hintText: 'New password',
+                    hintStyle: AppTextStyles.body.copyWith(
+                      color: Colors.grey[500],
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 16 * scale,
+                      horizontal: 16 * scale,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: AppTextStyles.body.copyWith(fontSize: 16 * scale),
+                ),
+                SizedBox(height: 16 * scale),
+                TextField(
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: 'Confirm new password',
                     hintStyle: AppTextStyles.body.copyWith(
                       color: Colors.grey[500],
                     ),
@@ -102,10 +114,9 @@ class ForgetPassword extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    onPressed: () => Get.toNamed(
-                      Routes.OTP_VERIFICATION,
-                      arguments: {'isPasswordReset': false},
-                    ),
+                    onPressed: () {
+                      controller.resetPassword(widget.email);
+                    },
                     child: Text(
                       'Sent Code',
                       style: AppTextStyles.button.copyWith(
