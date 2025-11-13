@@ -33,7 +33,7 @@ class HomeController extends GetxController {
         final exp = data['experience'] as List;
         cities.value = dataC.map((e) => CityModel.fromjson(e)).toList();
         experiences.value = exp
-            .map((e) => ExperienceModel.fromjson(e))
+            .map((e) => ExperienceModel.fromJson(e))
             .toList();
       } else {
         Get.snackbar('Error', message);

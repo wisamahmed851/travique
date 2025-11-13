@@ -7,7 +7,7 @@ class CityRepositoryImpl implements CityRepository {
   CityRepositoryImpl(this.cityDataRemote);
 
   @override
-  Future<Map<String, dynamic>> cityDetail(String id){
+  Future<Map<String, dynamic>> cityDetail(int id){
     return cityDataRemote.cityDetail(id);
   }
 }

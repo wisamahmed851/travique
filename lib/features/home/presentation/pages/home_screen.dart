@@ -320,8 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context, index) {
             final city = cityList[index];
             return GestureDetector(
-              onTap: () =>
-                  Get.toNamed(Routes.CITY_DETAIL, arguments: city.name),
+              onTap: () => Get.toNamed(Routes.CITY_DETAIL, arguments: city.id),
               child: Container(
                 width: 160,
                 margin: EdgeInsets.only(

@@ -1,60 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:travique/core/constants/api_constants.dart';
 import 'package:travique/core/theme/app_colors.dart';
 import 'package:travique/core/theme/app_text_styles.dart';
+import 'package:travique/features/city/presentation/controllers/city_controller.dart';
 import 'package:travique/features/home/presentation/widgets/exclusive_package_card.dart';
 import 'package:travique/features/home/presentation/widgets/recommended_packages_section.dart';
 import 'package:travique/core/widgets/search_bar.dart';
 import 'package:travique/routes/app_routes.dart';
 
-class CityDetailsScreen extends StatelessWidget {
-  final String cityName = "New York";
-  final String cityImage = "assets/images/newyork.jpeg";
+class CityDetailsScreen extends StatefulWidget {
+  final int id;
+  const CityDetailsScreen({Key? key, required this.id}) : super(key: key);
 
-  CityDetailsScreen({Key? key}) : super(key: key);
+  @override
+  State<CityDetailsScreen> createState() => _CityDetailsScreenState();
+}
 
-  // ✅ Example sample data — replace later with API data
-  final List<Map<String, dynamic>> attractions = [
-    {
-      "title": "Central Park",
-      "subtitle": "Famous urban park",
-      "rating": 4.8,
-      "image": "assets/images/centralPark.jpg",
-    },
-    {
-      "title": "Times Square",
-      "subtitle": "Entertainment hub",
-      "rating": 4.7,
-      "image": "assets/images/timesSquare.jpg",
-    },
-    {
-      "title": "Statue of Liberty",
-      "subtitle": "Historic landmark",
-      "rating": 4.9,
-      "image": "assets/images/statueOfLiberty.jpg",
-    },
-  ];
+class _CityDetailsScreenState extends State<CityDetailsScreen> {
+  final controller = Get.find<CityController>();
 
-  final List<Map<String, dynamic>> categories = [
-    {"name": "Attractions", "icon": "assets/images/mountain.png"},
-    {"name": "Food", "icon": "assets/images/Beach.png"},
-    {"name": "Events", "icon": "assets/images/History.png"},
-  ];
-
-  final List<Map<String, dynamic>> recommendations = [
-    {
-      "title": "Rooftop Dinner",
-      "subtitle": "Skyline view restaurant",
-      "rating": 4.6,
-      "image": "assets/images/rooftopDinner.jpeg",
-    },
-    {
-      "title": "Broadway Show",
-      "subtitle": "Musical performance",
-      "rating": 4.8,
-      "image": "assets/images/broadwayShow.jpg",
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // ✅ Call your API when the screen loads
+    debugPrint("screen is fine");
+    controller.fetchCityDetail(widget.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,39 +36,50 @@ class CityDetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: [
-            // 🏙️ City Banner
-            _buildCityHeader(context, scale),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  SearchBarWidget(searchtext: "Search in $cityName"),
-                  const SizedBox(height: 25),
-                  _buildSectionTitle("Top Attractions in $cityName"),
-                  const SizedBox(height: 10),
-                  _buildAttractionSection(context),
-                  const SizedBox(height: 25),
-                  _buildSectionTitle("Explore $cityName"),
-                  const SizedBox(height: 10),
-                  _buildCategorySection(context),
-                  const SizedBox(height: 25),
-                  RecommendedPackagesSection(country: 'New York'),
-                ],
+        child: Obx(() {
+          // 🌀 Show loader while fetching
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // ✅ Once data is fetched, show UI
+          final city = controller.cityDetail.value;
+          final attractions = controller.topAttractions;
+          final categories = controller.category;
+
+          return ListView(
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _buildCityHeader(city?.name ?? "City", city?.image ?? "", scale),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    SearchBarWidget(searchtext: "Search in ${city?.name}"),
+                    const SizedBox(height: 25),
+                    _buildSectionTitle("Top Attractions in ${city?.name}"),
+                    const SizedBox(height: 10),
+                    _buildAttractionSection(context),
+                    const SizedBox(height: 25),
+                    _buildSectionTitle("Explore ${city?.name}"),
+                    const SizedBox(height: 10),
+                    _buildCategorySection(categories),
+                    const SizedBox(height: 25),
+                    RecommendedPackagesSection(country: city?.name ?? ''),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
 
-  // 🏙️ City Header with background image
-  Widget _buildCityHeader(BuildContext context, double scale) {
+  // 🏙️ City Header
+  Widget _buildCityHeader(String name, String image, double scale) {
     return Stack(
       children: [
         Container(
@@ -104,7 +87,10 @@ class CityDetailsScreen extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(cityImage),
+              image: image.isNotEmpty
+                  ? NetworkImage('${ApiConstants.imageUrl}/$image')
+                  : const AssetImage('assets/images/placeholder.jpg')
+                        as ImageProvider,
               fit: BoxFit.cover,
             ),
           ),
@@ -117,7 +103,7 @@ class CityDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Explore $cityName",
+                "Explore $name",
                 style: AppTextStyles.heading.copyWith(
                   fontSize: 26 * scale,
                   color: Colors.white,
@@ -137,35 +123,41 @@ class CityDetailsScreen extends StatelessWidget {
     );
   }
 
-  // 🌆 Attractions List
   Widget _buildAttractionSection(BuildContext context) {
-    // final screenHeight = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: /* screenHeight * 0.33 */ 270,
-      child: attractions.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: attractions.length,
-              clipBehavior: Clip.none,
-              itemBuilder: (context, index) {
-                final item = attractions[index];
-                return GestureDetector(
-                  onTap: () => Get.toNamed(Routes.PLACE_DETAILS),
-                  child: ExclusivePackageCard(
-                    city: item['subtitle'],
-                    image: item['image'],
-                    country: item['title'],
-                    rating: item['rating'],
-                  ),
-                );
-              },
-            ),
-    );
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (controller.topAttractions.isEmpty) {
+        return const Center(child: Text("No attractions found"));
+      }
+
+      return SizedBox(
+        height: 270,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: controller.topAttractions.length,
+          itemBuilder: (context, index) {
+            final item = controller.topAttractions[index];
+            return GestureDetector(
+              onTap: () =>
+                  Get.toNamed(Routes.PLACE_DETAILS, arguments: {'id': item.id}),
+              child: ExclusivePackageCard(
+                city: item.name, // or item.cityName if you have one
+                image: "${ApiConstants.imageUrl}/${item.mainImage}",
+                country: item.category,
+                rating: double.tryParse(item.averageRating ?? '0') ?? 0.0,
+              ), 
+            );
+          },
+        ),
+      );
+    });
   }
 
-  // 🗺️ Category Section
-  Widget _buildCategorySection(BuildContext context) {
+  // 🗺️ Categories Section
+  Widget _buildCategorySection(List<dynamic> categories) {
     final screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
       height: 120,
@@ -184,10 +176,14 @@ class CityDetailsScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(item['icon'], height: 40, width: 40),
+                Image.network(
+                  '${ApiConstants.imageUrl}/${item.image}',
+                  height: 40,
+                  width: 40,
+                ),
                 const SizedBox(height: 6),
                 Text(
-                  item['name'],
+                  item.name ?? "",
                   style: AppTextStyles.body.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

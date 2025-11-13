@@ -5,7 +5,7 @@ class ExperienceModel {
 
   ExperienceModel({required this.id, required this.name, required this.image});
 
-  factory ExperienceModel.fromjson(Map<String, dynamic> json) {
+  factory ExperienceModel.fromJson(Map<String, dynamic> json) {
     return ExperienceModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',

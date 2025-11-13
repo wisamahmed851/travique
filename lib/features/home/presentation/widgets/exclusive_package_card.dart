@@ -41,7 +41,7 @@ class ExclusivePackageCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Image.asset(
+                child: Image.network(
                   image,
                   height: 180,
                   width: double.infinity,

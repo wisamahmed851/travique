@@ -5,7 +5,8 @@ import 'package:travique/core/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
 
 class CityRemoteData {
-  Future<Map<String, dynamic>> cityDetail(String id) async {
+  Future<Map<String, dynamic>> cityDetail(int id) async {
+    debugPrint("Everything is fine before fetching fetching the api");
     final url = Uri.parse('${ApiConstants.cityDetail}/$id');
 
     try {

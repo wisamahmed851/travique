@@ -71,7 +71,10 @@ class AppPages {
     ),
     GetPage(
       name: Routes.CITY_DETAIL,
-      page: () => CityDetailsScreen(),
+      page: () {
+        final int id = Get.arguments as int;
+        return CityDetailsScreen(id: id);
+      },
       binding: CityBinding(),
     ),
     GetPage(

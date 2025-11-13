@@ -3,24 +3,29 @@ class CityDetailModel {
   final String name;
   final String description;
   final String image;
+  final int countryId;
+  final String countryName;
 
   CityDetailModel({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
+    required this.countryId,
+    required this.countryName,
   });
 
-  factory CityDetailModel.fromjson(Map<String, dynamic> json) {
-    return CityDetailModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      image: json['image'] ?? '',
-    );
-  }
+  factory CityDetailModel.fromJson(Map<String, dynamic> json) {
+    final city = json['city'] ?? {};
+    final country = city['country'] ?? {};
 
-  Map<String, dynamic> tojson() {
-    return {'id': id, 'name': name, 'description': description, 'image': image};
+    return CityDetailModel(
+      id: city['id'] ?? 0,
+      name: city['name'] ?? '',
+      description: city['description'] ?? '',
+      image: city['image'] ?? '',
+      countryId: country['id'] ?? 0,
+      countryName: country['name'] ?? '',
+    );
   }
 }
